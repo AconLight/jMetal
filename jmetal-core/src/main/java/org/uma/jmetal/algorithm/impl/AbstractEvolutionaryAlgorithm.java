@@ -1,6 +1,8 @@
 package org.uma.jmetal.algorithm.impl;
 
 import org.uma.jmetal.algorithm.Algorithm;
+import org.uma.jmetal.algorithm.memetic.MemeticLocalSearch;
+import org.uma.jmetal.algorithm.memetic.impl.MemeticLocalSearchVariableRecommendation;
 import org.uma.jmetal.problem.Problem;
 
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.List;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 @SuppressWarnings("serial")
-public abstract class AbstractEvolutionaryAlgorithm<S, R>  implements Algorithm<R>{
+public abstract class AbstractEvolutionaryAlgorithm<S, R> extends MemeticLocalSearchVariableRecommendation implements Algorithm<R> {
   protected List<S> population;
   protected Problem<S> problem ;
 
@@ -49,7 +51,7 @@ public abstract class AbstractEvolutionaryAlgorithm<S, R>  implements Algorithm<
 
   @Override public abstract R getResult();
 
-  @Override public void run() {
+  public void run2() {
     List<S> offspringPopulation;
     List<S> matingPopulation;
 
@@ -58,6 +60,24 @@ public abstract class AbstractEvolutionaryAlgorithm<S, R>  implements Algorithm<
     initProgress();
     while (!isStoppingConditionReached()) {
       matingPopulation = selection(population);
+      offspringPopulation = reproduction(matingPopulation);
+      offspringPopulation = evaluatePopulation(offspringPopulation);
+      population = replacement(population, offspringPopulation);
+      updateProgress();
+    }
+  }
+
+  @Override public void run() {
+    List<S> offspringPopulation;
+    List<S> matingPopulation;
+    List<S> improvedPopulation;
+
+    population = createInitialPopulation();
+    population = evaluatePopulation(population);
+    initProgress();
+    while (!isStoppingConditionReached()) {
+      improvedPopulation = localSearch(population);
+      matingPopulation = selection(improvedPopulation);
       offspringPopulation = reproduction(matingPopulation);
       offspringPopulation = evaluatePopulation(offspringPopulation);
       population = replacement(population, offspringPopulation);
