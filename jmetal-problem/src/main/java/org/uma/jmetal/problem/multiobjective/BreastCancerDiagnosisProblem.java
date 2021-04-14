@@ -1,25 +1,30 @@
 package org.uma.jmetal.problem.multiobjective;
 
+import model.Observation;
 import org.uma.jmetal.problem.integerproblem.impl.AbstractIntegerProblem;
 import org.uma.jmetal.solution.integersolution.IntegerSolution;
+import org.uma.jmetal.solution.memetic.MemeticIntegerSolution;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DummyIntegerProblem extends AbstractIntegerProblem {
+public class BreastCancerDiagnosisProblem extends AbstractIntegerProblem {
 
-    public DummyIntegerProblem()  {
-        setNumberOfVariables(3);
+    ArrayList<Observation> observations;
+
+    public BreastCancerDiagnosisProblem(ArrayList<Observation> observations)  {
+        this.observations = observations;
+        setNumberOfVariables(5);
         setNumberOfObjectives(2);
         setNumberOfConstraints(0);
-        setName("DummyIntegerProblem");
+        setName("BreastCancerDiagnosisProblem");
 
         List<Integer> lowerLimit = new ArrayList<>(getNumberOfVariables()) ;
         List<Integer> upperLimit = new ArrayList<>(getNumberOfVariables()) ;
 
         for (int i = 0; i < getNumberOfVariables(); i++) {
             lowerLimit.add(0);
-            upperLimit.add(10);
+            upperLimit.add(99);
         }
 
         setVariableBounds(lowerLimit, upperLimit);
@@ -35,7 +40,16 @@ public class DummyIntegerProblem extends AbstractIntegerProblem {
         }
 
         solution.setObjective(0, f1-f2);
-        solution.setObjective(1, f2*f1 - (f1+f2));
+        solution.setObjective(1, f1-f2);
 
+    }
+
+    @Override
+    public IntegerSolution createSolution() {
+        MemeticIntegerSolution s = new MemeticIntegerSolution(0, 99, 5, 2);
+        for (int i = 0; i < s.getNumberOfVariables(); i++) {
+            s.setVariable(i, i);
+        }
+        return s;
     }
 }

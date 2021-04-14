@@ -33,7 +33,7 @@ public class GenerationalGeneticAlgorithmStringMatchingRunner {
     MutationOperator<CharSequenceSolution> mutation;
     SelectionOperator<List<CharSequenceSolution>, CharSequenceSolution> selection;
 
-    problem = new StringMatching("jMetal is an optimization framework");
+    problem = new StringMatching("jMe");
 
     crossover = new NullCrossover<>();
 
@@ -45,7 +45,7 @@ public class GenerationalGeneticAlgorithmStringMatchingRunner {
     algorithm =
         new GeneticAlgorithmBuilder<>(problem, crossover, mutation)
             .setPopulationSize(50)
-            .setMaxEvaluations(250000)
+            .setMaxEvaluations(1)
             .setSelectionOperator(selection)
             .build();
 

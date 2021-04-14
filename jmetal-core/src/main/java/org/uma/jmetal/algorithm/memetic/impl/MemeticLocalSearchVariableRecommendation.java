@@ -10,7 +10,7 @@ public class MemeticLocalSearchVariableRecommendation<S> implements MemeticLocal
 
     @Override
     public List localSearch(List solutions) {
-        
+
         return solutions;
     }
 }
