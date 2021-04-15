@@ -42,7 +42,6 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
    *                               java org.uma.jmetal.runner.multiobjective.nsgaii.NSGAIIRunner problemName [referenceFront]
    */
   public static void main(String[] args) throws JMetalException, FileNotFoundException {
-
     ArrayList<Observation> observations = loadData();
 
     Problem problem;
@@ -57,7 +56,7 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
     double crossoverProbability = 0.9;
     crossover = new MyCrossover(crossoverProbability);
 
-    double mutationProbability = 1.0 / problem.getNumberOfVariables();
+    double mutationProbability = 0.6;
     int [] indexes = new int[100];
     for (int i = 0; i < 100; i++) {
       indexes[i] = i;
@@ -67,7 +66,7 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
     selection = new BinaryTournamentSelection<>(
             new RankingAndCrowdingDistanceComparator<>());
 
-    int populationSize = 4 ;
+    int populationSize = 100 ;
     algorithm = new NSGAIIBuilder(problem, crossover, mutation, populationSize)
             .setSelectionOperator(selection)
             .setMaxEvaluations(1000)
@@ -86,7 +85,9 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
 //      printQualityIndicators(population, referenceParetoFront);
 //    }
     System.out.println("elo");
-    //System.out.println("" + population..getValues()[0]);
+    System.out.println("" + population.get(0).getVariables().toString());
+
+
 
 
     PlotFront plot = new PlotSmile(new ArrayFront(population).getMatrix()) ;

@@ -35,13 +35,40 @@ public class MyMutation implements MutationOperator<MemeticIntegerSolution> {
 
   /** Performs the operation */
   public void doMutation(MemeticIntegerSolution solution) {
-    int sequenceLength = solution.getNumberOfVariables();
 
-    for (int i = 0; i < sequenceLength; i++) {
+
+    // memetic remove
+    for (int i = 0; i < solution.memesRemove.getVariables().size(); i++) {
       if (JMetalRandom.getInstance().nextDouble() < mutationProbability) {
-        int positionToChange = JMetalRandom.getInstance().nextInt(0, sequenceLength - 1);
+        for (int j = 0; j < solution.getVariables().size(); j++) {
+          if (solution.getVariable(j) == solution.memesRemove.getVariable(i)) {
+            solution.remOneVar(j);
+            solution.memesRemove.setVariable(i, null);
+            solution.memesRemove.memesValues.set(i, null);
+          }
+        }
+      }
+    }
+
+    // normal add
+    if (JMetalRandom.getInstance().nextDouble() < mutationProbability) {
+      int newValue = alphabet[JMetalRandom.getInstance().nextInt(0, alphabet.length - 1)];
+      while (solution.getVariables().contains(newValue)) {
+        newValue = alphabet[JMetalRandom.getInstance().nextInt(0, alphabet.length - 1)];
+      }
+      solution.addOneVar(newValue);
+    }
+
+
+    // normal change
+    int size = solution.getVariables().size();
+    for (int i = 0; i < size; i++) {
+      if (JMetalRandom.getInstance().nextDouble() < mutationProbability) {
+        int positionToChange = JMetalRandom.getInstance().nextInt(0, size - 1);
         int newValue = alphabet[JMetalRandom.getInstance().nextInt(0, alphabet.length - 1)];
-        //while (newValue)
+        while (solution.getVariables().contains(newValue)) {
+          newValue = alphabet[JMetalRandom.getInstance().nextInt(0, alphabet.length - 1)];
+        }
         solution.setVariable(positionToChange, newValue);
       }
     }

@@ -7,10 +7,7 @@ import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import org.uma.jmetal.util.pseudorandom.RandomGenerator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class allows to apply a SBX crossover operator using two parent solutions (Integer encoding)
@@ -64,11 +61,18 @@ public class MyCrossover implements CrossoverOperator<MemeticIntegerSolution> {
 
   /** doCrossover method */
   public List<MemeticIntegerSolution> doCrossover(
-          double probability, IntegerSolution parent1, IntegerSolution parent2) {
+          double probability, MemeticIntegerSolution parent1, MemeticIntegerSolution parent2) {
     List<MemeticIntegerSolution> offspring = new ArrayList<MemeticIntegerSolution>(2);
 
     offspring.add((MemeticIntegerSolution) parent1.copy()) ;
     offspring.add((MemeticIntegerSolution) parent2.copy()) ;
+    HashMap<Integer, ArrayList<Double>> varVals = new HashMap();
+    for (int i = 0; i < parent1.getNumberOfVariables(); i++) {
+      varVals.put(parent1.getVariable(i), parent1.variablesFitnessValues.get(i));
+    }
+    for (int i = 0; i < parent2.getNumberOfVariables(); i++) {
+      varVals.put(parent2.getVariable(i), parent2.variablesFitnessValues.get(i));
+    }
 
     if (randomGenerator.getRandomValue() <= probability) {
       ArrayList<Integer> bothVars = new ArrayList<>();
@@ -78,6 +82,15 @@ public class MyCrossover implements CrossoverOperator<MemeticIntegerSolution> {
       Collections.shuffle(genes);
       offspring.get(0).setVariables(genes.subList(0, genes.size()/2));
       offspring.get(1).setVariables(genes.subList(genes.size()/2, genes.size()));
+    }
+    offspring.get(0).variablesFitnessValues.clear();
+    for (int i = 0; i < offspring.get(0).getNumberOfVariables(); i++) {
+      offspring.get(0).variablesFitnessValues.add(varVals.get(offspring.get(0).getVariable(i)));
+    }
+
+    offspring.get(1).variablesFitnessValues.clear();
+    for (int i = 0; i < offspring.get(1).getNumberOfVariables(); i++) {
+      offspring.get(1).variablesFitnessValues.add(varVals.get(offspring.get(1).getVariable(i)));
     }
 
     return offspring;

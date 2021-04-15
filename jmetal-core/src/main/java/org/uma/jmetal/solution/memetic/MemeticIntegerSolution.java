@@ -15,7 +15,7 @@ public class MemeticIntegerSolution extends AbstractSolution<Integer> implements
 
     private int lowerBound, upperBound;
 
-    private static int numberOfFitnessHints = 1;
+    public static int numberOfFitnessHints = 1;
 
     public MemeticIntegerSolution(int lowerBound, int upperBound, int initialNumberOfVariables, int numberOfObjectives) {
         super(initialNumberOfVariables, numberOfObjectives);
@@ -33,7 +33,7 @@ public class MemeticIntegerSolution extends AbstractSolution<Integer> implements
     public MemeticIntegerSolution(int lowerBound, int upperBound, int initialNumberOfVariables, int numberOfObjectives, boolean noMoreMemes) {
         super(initialNumberOfVariables, numberOfObjectives);
         for (int i = 0; i < numberOfFitnessHints; i++) {
-            addOneVar(null);
+            getVariables().add(null);
         }
         memesValues = new ArrayList<Double>(Collections.nCopies(numberOfFitnessHints, null));
         this.lowerBound = lowerBound;
@@ -46,11 +46,22 @@ public class MemeticIntegerSolution extends AbstractSolution<Integer> implements
     }
 
     public void addOneVar(Integer value) {
+        int a2 = getVariables().size();
+        int b2 = variablesFitnessValues.size();
         getVariables().add(value);
+        variablesFitnessValues.add(new ArrayList<Double>(Collections.nCopies(numberOfFitnessHints, 0d)));
+        if (getVariables().size() != variablesFitnessValues.size()) {
+            int a = getVariables().size();
+            int b = variablesFitnessValues.size();
+            int aa = 2;
+        }
     }
 
     public void remOneVar(int index) {
         getVariables().remove(index);
+        if (variablesFitnessValues != null) {
+            variablesFitnessValues.remove(index);
+        }
     }
 
     public void setHint(int varIndex, int hintIndex, double value) {
@@ -86,7 +97,7 @@ public class MemeticIntegerSolution extends AbstractSolution<Integer> implements
 
     /** Copy constructor */
     public MemeticIntegerSolution(MemeticIntegerSolution solution) {
-        super(solution.getNumberOfVariables(), solution.getNumberOfObjectives());
+        this(solution.lowerBound, solution.upperBound, solution.getNumberOfVariables(), solution.getNumberOfObjectives());
         variablesFitnessValues = copyVariablesFitnessValues(solution.variablesFitnessValues);
         memesAdd = new MemeticIntegerSolution(solution.memesAdd, true);
         memesRemove = new MemeticIntegerSolution(solution.memesRemove, true);
@@ -111,9 +122,9 @@ public class MemeticIntegerSolution extends AbstractSolution<Integer> implements
 
     /** Copy constructor */
     public MemeticIntegerSolution(MemeticIntegerSolution solution, boolean noMoreMemes) {
-        super(solution.getNumberOfVariables(), solution.getNumberOfObjectives());
+        this(solution.lowerBound, solution.upperBound, solution.getNumberOfVariables(), solution.getNumberOfObjectives(), true);
 
-        variablesFitnessValues = copyVariablesFitnessValues(solution.variablesFitnessValues);
+//        variablesFitnessValues = copyVariablesFitnessValues(solution.variablesFitnessValues);
         memesValues = copyMemesValues(solution.memesValues);
 
         for (int i = 0; i < solution.getNumberOfVariables(); i++) {
@@ -150,7 +161,9 @@ public class MemeticIntegerSolution extends AbstractSolution<Integer> implements
     }
 
     private ArrayList<ArrayList<Double>> copyVariablesFitnessValues(ArrayList<ArrayList<Double>> variablesFitnessValues) {
-        if (variablesFitnessValues == null) return null;
+        if (variablesFitnessValues == null) {
+            return null;
+        }
         ArrayList<ArrayList<Double>> res = new ArrayList<>();
         for (ArrayList<Double> arr: variablesFitnessValues) {
             ArrayList<Double> arrCopy = new ArrayList<>();

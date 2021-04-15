@@ -13,6 +13,7 @@ public class BreastCancerDiagnosisProblem extends AbstractGenericProblem<Memetic
 
     ArrayList<Observation> observations;
     Vector<Double> centroid;
+    private static int initialNumberofVariables = 10;
 
     public BreastCancerDiagnosisProblem(ArrayList<Observation> observations)  {
         this.observations = observations;
@@ -30,7 +31,7 @@ public class BreastCancerDiagnosisProblem extends AbstractGenericProblem<Memetic
         for (int i = 0; i < observations.get(0).data.size(); i++) {
             centroid.set(i, centroid.get(i) / observations.size());
         }
-        setNumberOfVariables(5);
+        setNumberOfVariables(initialNumberofVariables);
         setNumberOfObjectives(2);
         setNumberOfConstraints(0);
         setName("BreastCancerDiagnosisProblem");
@@ -49,8 +50,9 @@ public class BreastCancerDiagnosisProblem extends AbstractGenericProblem<Memetic
     public void evaluate(MemeticIntegerSolution solution) {
         double sum = 0;
         int index = 0;
+        //System.out.println(solution.getVariables().size());
         for (Integer val: solution.getVariables()) {
-            double vDistance = vectorDistance(centroid, observations.get(val).data);
+            double vDistance = -vectorDistance(centroid, observations.get(val).data);
             solution.setHint(index, 0, vDistance);
             sum += vDistance;
             index++;
@@ -64,7 +66,7 @@ public class BreastCancerDiagnosisProblem extends AbstractGenericProblem<Memetic
 
     @Override
     public MemeticIntegerSolution createSolution() {
-        MemeticIntegerSolution s = new MemeticIntegerSolution(0, 99, 5, 2);
+        MemeticIntegerSolution s = new MemeticIntegerSolution(0, 99, initialNumberofVariables, 2);
         for (int i = 0; i < s.getNumberOfVariables(); i++) {
             s.setVariable(i, JMetalRandom.getInstance().nextInt(0, 99));
         }
