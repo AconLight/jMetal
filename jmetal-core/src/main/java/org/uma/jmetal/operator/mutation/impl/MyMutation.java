@@ -40,8 +40,9 @@ public class MyMutation implements MutationOperator<MemeticIntegerSolution> {
     for (int i = 0; i < sequenceLength; i++) {
       if (JMetalRandom.getInstance().nextDouble() < mutationProbability) {
         int positionToChange = JMetalRandom.getInstance().nextInt(0, sequenceLength - 1);
-        int newCharValue = alphabet[JMetalRandom.getInstance().nextInt(0, alphabet.length - 1)];
-        solution.setVariable(positionToChange, newCharValue);
+        int newValue = alphabet[JMetalRandom.getInstance().nextInt(0, alphabet.length - 1)];
+        //while (newValue)
+        solution.setVariable(positionToChange, newValue);
       }
     }
   }

@@ -55,8 +55,7 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
     problem = new BreastCancerDiagnosisProblem(observations);
 
     double crossoverProbability = 0.9;
-    double crossoverDistributionIndex = 20.0;
-    crossover = new MyCrossover(crossoverProbability, crossoverDistributionIndex);
+    crossover = new MyCrossover(crossoverProbability);
 
     double mutationProbability = 1.0 / problem.getNumberOfVariables();
     int [] indexes = new int[100];
@@ -68,10 +67,10 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
     selection = new BinaryTournamentSelection<>(
             new RankingAndCrowdingDistanceComparator<>());
 
-    int populationSize = 100 ;
+    int populationSize = 4 ;
     algorithm = new NSGAIIBuilder(problem, crossover, mutation, populationSize)
             .setSelectionOperator(selection)
-            .setMaxEvaluations(25000)
+            .setMaxEvaluations(1000)
             .build();
 
     AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm)
@@ -82,10 +81,10 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
 
     //JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
 
-    printFinalSolutionSet(population);
-    if (!referenceParetoFront.equals("")) {
-      printQualityIndicators(population, referenceParetoFront);
-    }
+//    printFinalSolutionSet(population);
+//    if (!referenceParetoFront.equals("")) {
+//      printQualityIndicators(population, referenceParetoFront);
+//    }
     System.out.println("elo");
     //System.out.println("" + population..getValues()[0]);
 
@@ -101,9 +100,11 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
       reader = new BufferedReader(new FileReader(
               "data/bcw.data"));
       String line = reader.readLine();
-      while (line != null) {
+      int i = 0;
+      while (line != null && i < 100) {
         if (!line.contains("?")) {
           observations.add(new Observation(line));
+          i++;
         }
         line = reader.readLine();
       }

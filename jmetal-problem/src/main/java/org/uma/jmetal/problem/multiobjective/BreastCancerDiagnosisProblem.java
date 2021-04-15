@@ -1,19 +1,35 @@
 package org.uma.jmetal.problem.multiobjective;
 
 import model.Observation;
-import org.uma.jmetal.problem.integerproblem.impl.AbstractIntegerProblem;
-import org.uma.jmetal.solution.integersolution.IntegerSolution;
+import org.uma.jmetal.problem.AbstractGenericProblem;
 import org.uma.jmetal.solution.memetic.MemeticIntegerSolution;
+import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
-public class BreastCancerDiagnosisProblem extends AbstractIntegerProblem {
+public class BreastCancerDiagnosisProblem extends AbstractGenericProblem<MemeticIntegerSolution> {
 
     ArrayList<Observation> observations;
+    Vector<Double> centroid;
 
     public BreastCancerDiagnosisProblem(ArrayList<Observation> observations)  {
         this.observations = observations;
+        centroid = new Vector<Double>(observations.get(0).data.size());
+        for (int i = 0; i < observations.get(0).data.size(); i++) {
+            centroid.add(0d);
+        }
+        for (Observation o: observations) {
+            int i = 0;
+            for (Integer val: o.data) {
+                centroid.set(i, centroid.get(i) + val);
+                i++;
+            }
+        }
+        for (int i = 0; i < observations.get(0).data.size(); i++) {
+            centroid.set(i, centroid.get(i) / observations.size());
+        }
         setNumberOfVariables(5);
         setNumberOfObjectives(2);
         setNumberOfConstraints(0);
@@ -27,29 +43,39 @@ public class BreastCancerDiagnosisProblem extends AbstractIntegerProblem {
             upperLimit.add(99);
         }
 
-        setVariableBounds(lowerLimit, upperLimit);
     }
 
     @Override
-    public void evaluate(IntegerSolution solution) {
-        int f1 = 0;
-        int f2 = 1;
+    public void evaluate(MemeticIntegerSolution solution) {
+        double sum = 0;
+        int index = 0;
         for (Integer val: solution.getVariables()) {
-            f1 += val;
-            f2 *=f1;
+            double vDistance = vectorDistance(centroid, observations.get(val).data);
+            solution.setHint(index, 0, vDistance);
+            sum += vDistance;
+            index++;
         }
+        double cDistance = sum / solution.getVariables().size();
 
-        solution.setObjective(0, f1-f2);
-        solution.setObjective(1, f1-f2);
+        solution.setObjective(0, cDistance);
+        solution.setObjective(1, cDistance);
 
     }
 
     @Override
-    public IntegerSolution createSolution() {
+    public MemeticIntegerSolution createSolution() {
         MemeticIntegerSolution s = new MemeticIntegerSolution(0, 99, 5, 2);
         for (int i = 0; i < s.getNumberOfVariables(); i++) {
-            s.setVariable(i, i);
+            s.setVariable(i, JMetalRandom.getInstance().nextInt(0, 99));
         }
         return s;
+    }
+
+    private double vectorDistance(Vector<Double> a, Vector<Integer> b) {
+        double sum = 0;
+        for (int i = 0; i < a.size(); i++) {
+            sum += (a.get(i) - b.get(i))*(a.get(i) - b.get(i));
+        }
+        return Math.sqrt(sum);
     }
 }
