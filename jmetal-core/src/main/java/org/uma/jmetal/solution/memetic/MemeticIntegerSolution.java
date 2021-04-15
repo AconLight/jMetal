@@ -46,21 +46,25 @@ public class MemeticIntegerSolution extends AbstractSolution<Integer> implements
     }
 
     public void addOneVar(Integer value) {
-        int a2 = getVariables().size();
-        int b2 = variablesFitnessValues.size();
         getVariables().add(value);
         variablesFitnessValues.add(new ArrayList<Double>(Collections.nCopies(numberOfFitnessHints, 0d)));
-        if (getVariables().size() != variablesFitnessValues.size()) {
-            int a = getVariables().size();
-            int b = variablesFitnessValues.size();
-            int aa = 2;
-        }
     }
 
     public void remOneVar(int index) {
         getVariables().remove(index);
         if (variablesFitnessValues != null) {
             variablesFitnessValues.remove(index);
+        }
+    }
+
+    public void shareMemes(MemeticIntegerSolution s) {
+        if (s.memesAdd != null && memesAdd != null) {
+            for (int i = 0; i < s.memesAdd.memesValues.size(); i++) {
+                if (s.memesAdd.memesValues.get(i) < memesAdd.memesValues.get(i)) {
+                    memesAdd.setVariable(i, s.memesAdd.getVariable(i));
+                    memesAdd.memesValues.set(i, s.memesAdd.memesValues.get(i));
+                }
+            }
         }
     }
 

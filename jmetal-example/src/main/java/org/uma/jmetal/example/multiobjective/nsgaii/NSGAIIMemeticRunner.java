@@ -43,6 +43,23 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
    */
   public static void main(String[] args) throws JMetalException, FileNotFoundException {
     ArrayList<Observation> observations = loadData();
+    int outliers = 0;
+    for (Observation o : observations) {
+      if (o.diagnosis == 4) {
+        outliers++;
+      }
+    }
+    System.out.println("outliers: " + outliers);
+    float sum = 0;
+    int numb = 100;
+    for (int i = 0; i < numb; i++) {
+      sum += run(observations);
+    }
+    float result = sum/numb;
+    System.out.println(result);
+  }
+  public static float run(ArrayList<Observation> observations) throws JMetalException, FileNotFoundException {
+
 
     Problem problem;
     Algorithm<List<MemeticIntegerSolution>> algorithm;
@@ -66,7 +83,7 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
     selection = new BinaryTournamentSelection<>(
             new RankingAndCrowdingDistanceComparator<>());
 
-    int populationSize = 100 ;
+    int populationSize = 40 ;
     algorithm = new NSGAIIBuilder(problem, crossover, mutation, populationSize)
             .setSelectionOperator(selection)
             .setMaxEvaluations(1000)
@@ -84,14 +101,26 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
 //    if (!referenceParetoFront.equals("")) {
 //      printQualityIndicators(population, referenceParetoFront);
 //    }
-    System.out.println("elo");
-    System.out.println("" + population.get(0).getVariables().toString());
+//    System.out.println("elo");
+//    System.out.println("" + population.get(0).getVariables().toString());
+
+    int good = 0;
+    int bad = 0;
+    for (Integer val: population.get(0).getVariables()) {
+      if (observations.get(val).diagnosis == 4) {
+        good++;
+      }
+      else {
+        bad++;
+      }
+    }
 
 
 
+//    PlotFront plot = new PlotSmile(new ArrayFront(population).getMatrix()) ;
+//    plot.plot();
 
-    PlotFront plot = new PlotSmile(new ArrayFront(population).getMatrix()) ;
-    plot.plot();
+    return (good / (good+bad+0f));
   }
 
   public static ArrayList<Observation> loadData() {

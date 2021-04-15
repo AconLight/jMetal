@@ -13,7 +13,7 @@ public class BreastCancerDiagnosisProblem extends AbstractGenericProblem<Memetic
 
     ArrayList<Observation> observations;
     Vector<Double> centroid;
-    private static int initialNumberofVariables = 10;
+    private static int initialNumberofVariables = 20;
 
     public BreastCancerDiagnosisProblem(ArrayList<Observation> observations)  {
         this.observations = observations;
@@ -60,7 +60,7 @@ public class BreastCancerDiagnosisProblem extends AbstractGenericProblem<Memetic
         double cDistance = sum / solution.getVariables().size();
 
         solution.setObjective(0, cDistance);
-        solution.setObjective(1, cDistance);
+        solution.setObjective(1, Math.abs(45-solution.getNumberOfVariables()));
 
     }
 
