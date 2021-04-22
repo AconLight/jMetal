@@ -1,5 +1,6 @@
 package org.uma.jmetal.solution.memetic;
 
+import consts.Consts;
 import org.uma.jmetal.solution.AbstractSolution;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.solution.integersolution.IntegerSolution;
@@ -15,7 +16,7 @@ public class MemeticIntegerSolution extends AbstractSolution<Integer> implements
 
     private int lowerBound, upperBound;
 
-    public static int numberOfFitnessHints = 1;
+    public static int numberOfFitnessHints = Consts.numbOfFitnessHints;
 
     public MemeticIntegerSolution(int lowerBound, int upperBound, int initialNumberOfVariables, int numberOfObjectives) {
         super(initialNumberOfVariables, numberOfObjectives);
@@ -32,6 +33,7 @@ public class MemeticIntegerSolution extends AbstractSolution<Integer> implements
 
     public MemeticIntegerSolution(int lowerBound, int upperBound, int initialNumberOfVariables, int numberOfObjectives, boolean noMoreMemes) {
         super(initialNumberOfVariables, numberOfObjectives);
+        getVariables().clear();
         for (int i = 0; i < numberOfFitnessHints; i++) {
             getVariables().add(null);
         }
@@ -127,14 +129,15 @@ public class MemeticIntegerSolution extends AbstractSolution<Integer> implements
     /** Copy constructor */
     public MemeticIntegerSolution(MemeticIntegerSolution solution, boolean noMoreMemes) {
         this(solution.lowerBound, solution.upperBound, solution.getNumberOfVariables(), solution.getNumberOfObjectives(), true);
-
+        List<Integer> elo1 = getVariables();
 //        variablesFitnessValues = copyVariablesFitnessValues(solution.variablesFitnessValues);
         memesValues = copyMemesValues(solution.memesValues);
 
         for (int i = 0; i < solution.getNumberOfVariables(); i++) {
             setVariable(i, solution.getVariable(i));
         }
-
+        List<Integer> elo2 = getVariables();
+        int b = 0;
         for (int i = 0; i < solution.getNumberOfObjectives(); i++) {
             setObjective(i, solution.getObjective(i));
         }
@@ -147,6 +150,8 @@ public class MemeticIntegerSolution extends AbstractSolution<Integer> implements
         lowerBound = solution.lowerBound;
 
         attributes = new HashMap<>(solution.attributes);
+        List<Integer> elo3 = getVariables();
+        int a = 0;
     }
 
     @Override

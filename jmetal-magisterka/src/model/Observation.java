@@ -1,5 +1,7 @@
 package model;
 
+import consts.Consts;
+
 import java.util.Vector;
 
 public class Observation {
@@ -12,9 +14,13 @@ public class Observation {
     public Observation(String line) {
         String[] valStr = line.split(delimeter);
         this.id = Integer.valueOf(valStr[0]);
-        this.diagnosis = Integer.valueOf(valStr[10]);;
-        this.data = new Vector(9);
-        for (int i = 1; i <= 9; i++) {
+        this.diagnosis = Integer.valueOf(valStr[10]);
+        int dataCap = 4;
+        if (Consts.fullFeatureSet) {
+            dataCap = 9;
+        }
+        this.data = new Vector(dataCap);
+        for (int i = 1; i <= dataCap; i++) {
             this.data.add(Integer.valueOf(valStr[i]));
         }
     }
