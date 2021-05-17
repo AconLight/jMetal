@@ -1,6 +1,7 @@
 package org.uma.jmetal.example.multiobjective.nsgaii;
 
 import consts.Consts;
+import consts.ConstsGenerator;
 import model.Observation;
 import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAIIBuilder;
@@ -15,6 +16,7 @@ import org.uma.jmetal.solution.memetic.MemeticIntegerSolution;
 import org.uma.jmetal.util.AbstractAlgorithmRunner;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
+import results.ResultStorage;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -22,95 +24,44 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-/**
- * Class to configure and run the NSGA-II algorithm
- *
- * @author Antonio J. Nebro <antonio@lcc.uma.es>
- */
+
 public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
-  /**
-   * @param args Command line arguments.
-   * @throws JMetalException
-   * @throws FileNotFoundException Invoking command:
-   *                               java org.uma.jmetal.runner.multiobjective.nsgaii.NSGAIIRunner problemName [referenceFront]
-   */
+
   public static void main(String[] args) throws JMetalException, FileNotFoundException {
+    // SINGLE RUN
+    // constsRun();
 
-    int numb = 10;
 
+    // CONSTS GENERATOR RUN
+    while (ConstsGenerator.prepareNextConstsByParams()) {
+      constsRun();
+    }
+  }
 
+  public static void constsRun() throws JMetalException, FileNotFoundException {
+    int numb = Consts.numberOfRuns;
     ArrayList<Observation> observations = loadData();
     int outliers = 0;
     for (Observation o : observations) {
-      if (o.diagnosis == 4) {
+      if (o.diagnosis == Consts.outlierLabel) {
         outliers++;
       }
     }
     System.out.println("outliers: " + outliers);
-    float sumAcc = 0;
-    float minAcc = 1;
-    float maxAcc = 0;
 
-    float sumCO = 0;
-    float minCO = 1;
-    float maxCO = 0;
+    ResultStorage resultStorage = new ResultStorage(numb);
 
-    float sumFO = 0;
-    float minFO = 1;
-    float maxFO = 0;
     for (int i = 0; i < numb; i++) {
-      ArrayList<Float> result = run(observations);
-      float acc = (result.get(0) + result.get(1)) / (result.get(0) + result.get(1) + result.get(2) + result.get(3));
-      float co = (result.get(0)) / (result.get(2) + result.get(0));
-      float fo = (result.get(2)) / (result.get(2) + result.get(1));
-
-      if (minAcc > acc) {
-        minAcc = acc;
-      }
-      if (maxAcc < acc) {
-        maxAcc = acc;
-      }
-      sumAcc += acc;
-
-      if (minCO > co) {
-        minCO = co;
-      }
-      if (maxCO < co) {
-        maxCO = co;
-      }
-      sumCO += co;
-
-      if (minFO > fo) {
-        minFO = fo;
-      }
-      if (maxFO < fo) {
-        maxFO = fo;
-      }
-      sumFO += fo;
-
+      resultStorage.add(run(observations));
       if ((i+1)%(Math.max(1, numb/10)) == 0) {
         System.out.println((int)(((i+1f)/numb*100)) + "% done");
       }
-
     }
-    sumAcc = sumAcc/numb;
-    sumCO = sumCO/numb;
-    sumFO = sumFO/numb;
 
-    System.out.println("minAcc: " + minAcc);
-    System.out.println("avgAcc: " + sumAcc);
-    System.out.println("maxAcc: " + maxAcc);
-    System.out.println();
-
-    System.out.println("minCO: " + minCO);
-    System.out.println("avgCO: " + sumCO);
-    System.out.println("maxCO: " + maxCO);
-    System.out.println();
-
-    System.out.println("minFO: " + minFO);
-    System.out.println("avgFO: " + sumFO);
-    System.out.println("maxFO: " + maxFO);
+    resultStorage.finish();
+    resultStorage.print();
   }
+
   public static ArrayList<Float> run(ArrayList<Observation> observations2) throws JMetalException, FileNotFoundException {
 
     ArrayList<Observation> observations = new ArrayList<>();
@@ -122,27 +73,20 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
     MyCrossover crossover;
     MyMutation mutation;
     SelectionOperator<List<MemeticIntegerSolution>, MemeticIntegerSolution> selection;
-    String referenceParetoFront = "";
-
     problem = new BreastCancerDiagnosisProblem(observations);
-
-    double crossoverProbability = 0.6;
-    crossover = new MyCrossover(crossoverProbability);
-
-    double mutationProbability = 0.3;
-    int [] indexes = new int[100];
-    for (int i = 0; i < 100; i++) {
+    crossover = new MyCrossover();
+    int [] indexes = new int[observations2.size()];
+    for (int i = 0; i < observations2.size(); i++) {
       indexes[i] = i;
     }
-    mutation = new MyMutation(mutationProbability, indexes);
+    mutation = new MyMutation(indexes);
 
     selection = new BinaryTournamentSelection<>(
             new RankingAndCrowdingDistanceComparator<>());
 
-    int populationSize = 8;
-    algorithm = new NSGAIIBuilder(problem, crossover, mutation, populationSize)
+    algorithm = new NSGAIIBuilder(problem, crossover, mutation, Consts.popSize)
             .setSelectionOperator(selection)
-            .setMaxEvaluations(300)
+            .setMaxEvaluations(Consts.evaluations)
             .build();
 
     AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm)
@@ -150,9 +94,10 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
 
     List<MemeticIntegerSolution> population = algorithm.getResult();
 
+    return calcResults(population, observations);
+  }
 
-
-
+  public static ArrayList<Float> calcResults(List<MemeticIntegerSolution> population, ArrayList<Observation> observations) {
     int tp = 0;
     int tn = 0;
     int fp = 0;
@@ -160,7 +105,7 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
     int i = 0;
     ArrayList<Observation> toRem = new ArrayList<>();
     for (Integer val: population.get(0).getVariables()) {
-      if (observations.get(val).diagnosis == 4) {
+      if (observations.get(val).diagnosis == Consts.outlierLabel) {
         tp++;
       }
       else {
@@ -172,7 +117,7 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
     observations.removeAll(toRem);
 
     for (Observation o: observations) {
-      if (o.diagnosis == 2) {
+      if (o.diagnosis != Consts.outlierLabel) {
         tn++;
       }
       else {
@@ -181,16 +126,11 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
       i++;
     }
 
-
-
-//    PlotFront plot = new PlotSmile(new ArrayFront(population).getMatrix()) ;
-//    plot.plot();
     ArrayList<Float> res = new ArrayList<>();
     res.add(tp+0f);
     res.add(tn+0f);
     res.add(fp+0f);
     res.add(fn+0f);
-
 
     return res;
   }
@@ -200,7 +140,7 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
     BufferedReader reader;
     try {
       reader = new BufferedReader(new FileReader(
-              "data/bcw.data"));
+              Consts.file));
       String line = reader.readLine();
       int i = 0;
       while (line != null) {
@@ -219,7 +159,7 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
     ArrayList<Observation> normal = new ArrayList<>();
     ArrayList<Observation> outliers = new ArrayList<>();
     for (Observation o: observations) {
-      if (o.diagnosis == 4) {
+      if (o.diagnosis == Consts.outlierLabel) {
         outliers.add(o);
       } else {
         normal.add(o);
@@ -227,8 +167,8 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
     }
     Collections.shuffle(normal, new Random(2137));
     Collections.shuffle(outliers, new Random(2137));
-    normal = new ArrayList<>(normal.subList(0, 82 * Consts.dataSizeFactor));
-    outliers = new ArrayList<>(outliers.subList(0, 18 * Consts.dataSizeFactor));
+    normal = new ArrayList<>(normal.subList(0, Consts.normalSize));
+    outliers = new ArrayList<>(outliers.subList(0, Consts.outlierSize));
     observations.clear();
     observations.addAll(normal);
     observations.addAll(outliers);

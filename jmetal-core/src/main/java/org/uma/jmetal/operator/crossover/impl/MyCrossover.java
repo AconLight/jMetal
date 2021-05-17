@@ -1,5 +1,6 @@
 package org.uma.jmetal.operator.crossover.impl;
 
+import consts.Consts;
 import org.uma.jmetal.operator.crossover.CrossoverOperator;
 import org.uma.jmetal.solution.integersolution.IntegerSolution;
 import org.uma.jmetal.solution.memetic.MemeticIntegerSolution;
@@ -22,8 +23,8 @@ public class MyCrossover implements CrossoverOperator<MemeticIntegerSolution> {
   private RandomGenerator<Double> randomGenerator ;
 
   /** Constructor */
-  public MyCrossover(double crossoverProbability) {
-	  this(crossoverProbability, () -> JMetalRandom.getInstance().nextDouble());
+  public MyCrossover() {
+	  this(Consts.crossProb, () -> JMetalRandom.getInstance().nextDouble());
   }
 
   /** Constructor */
