@@ -1,5 +1,6 @@
 package org.uma.jmetal.operator.mutation.impl;
 
+import consts.Consts;
 import org.uma.jmetal.operator.mutation.MutationOperator;
 import org.uma.jmetal.solution.memetic.MemeticIntegerSolution;
 import org.uma.jmetal.solution.sequencesolution.impl.CharSequenceSolution;
@@ -83,7 +84,7 @@ public class MyMutation implements MutationOperator<MemeticIntegerSolution> {
     // normal change
     int size = solution.getVariables().size();
     for (int i = 0; i < size; i++) {
-      if (JMetalRandom.getInstance().nextDouble() < mutationProbability/4) {
+      if (JMetalRandom.getInstance().nextDouble() < mutationProbability/ Consts.numbOfFitnessHints) {
         int positionToChange = JMetalRandom.getInstance().nextInt(0, size - 1);
         int newValue = alphabet[JMetalRandom.getInstance().nextInt(0, alphabet.length - 1)];
         while (solution.getVariables().contains(newValue)) {

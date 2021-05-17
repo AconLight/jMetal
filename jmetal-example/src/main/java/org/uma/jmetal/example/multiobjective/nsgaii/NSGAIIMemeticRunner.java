@@ -36,7 +36,7 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
    */
   public static void main(String[] args) throws JMetalException, FileNotFoundException {
 
-    int numb = 40;
+    int numb = 10;
 
 
     ArrayList<Observation> observations = loadData();
@@ -129,7 +129,7 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
     double crossoverProbability = 0.6;
     crossover = new MyCrossover(crossoverProbability);
 
-    double mutationProbability = 0.2;
+    double mutationProbability = 0.3;
     int [] indexes = new int[100];
     for (int i = 0; i < 100; i++) {
       indexes[i] = i;
