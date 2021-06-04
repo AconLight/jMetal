@@ -33,13 +33,11 @@ public class MyMutation implements MutationOperator<MemeticIntegerSolution> {
 
   /** Performs the operation */
   public void doMutation(MemeticIntegerSolution solution) {
-    boolean doMemes = true;
 
-    if (doMemes) {
-
-      // memetic remove
+    // remove
+    if (JMetalRandom.getInstance().nextDouble() < Consts.memesPerc) {
       for (int i = 0; i < solution.memesRemove.getVariables().size(); i++) {
-        if (JMetalRandom.getInstance().nextDouble() < Consts.mutationRemProb) {
+        if (JMetalRandom.getInstance().nextDouble() < Consts.memesMutationRemProb) {
           for (int j = 0; j < solution.getVariables().size(); j++) {
             if (solution.getVariable(j) == solution.memesRemove.getVariable(i)) {
               solution.remOneVar(j);
@@ -49,36 +47,33 @@ public class MyMutation implements MutationOperator<MemeticIntegerSolution> {
           }
         }
       }
+    } else {
+      if (JMetalRandom.getInstance().nextDouble() < Consts.mutationRemProb && solution.getVariables().size() > 0) {
+        solution.remOneVar(JMetalRandom.getInstance().nextInt(0, solution.getVariables().size() - 1));
+      }
+    }
 
-      // memetic add
+    //  add
+    if (JMetalRandom.getInstance().nextDouble() < Consts.memesPerc) {
       for (int i = 0; i < solution.memesAdd.getVariables().size(); i++) {
-        if (JMetalRandom.getInstance().nextDouble() < Consts.mutationAddProb) {
+        if (JMetalRandom.getInstance().nextDouble() < Consts.memesMutationAddProb) {
           if (!solution.getVariables().contains(solution.memesAdd.getVariable(i))) {
             solution.addOneVar(solution.memesAdd.getVariable(i));
           }
         }
       }
-
     } else {
-
-      //     normal add
-      if (JMetalRandom.getInstance().nextDouble() < 0.2) {
+      if (JMetalRandom.getInstance().nextDouble() < Consts.mutationAddProb) {
         int newValue = alphabet[JMetalRandom.getInstance().nextInt(0, alphabet.length - 1)];
         while (solution.getVariables().contains(newValue)) {
           newValue = alphabet[JMetalRandom.getInstance().nextInt(0, alphabet.length - 1)];
         }
         solution.addOneVar(newValue);
       }
-
-      //     normal remove
-      if (JMetalRandom.getInstance().nextDouble() < 0.2 && solution.getVariables().size() > 0) {
-        solution.remOneVar(JMetalRandom.getInstance().nextInt(0, solution.getVariables().size() - 1));
-      }
-
     }
 
 
-    // normal change
+    //change
     int size = solution.getVariables().size();
     for (int i = 0; i < size; i++) {
       if (JMetalRandom.getInstance().nextDouble() < Consts.mutationChangeProb) {
@@ -90,6 +85,8 @@ public class MyMutation implements MutationOperator<MemeticIntegerSolution> {
         solution.setVariable(positionToChange, newValue);
       }
     }
+
+
   }
 
   @Override

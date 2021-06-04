@@ -65,19 +65,20 @@ public class BreastCancerDiagnosisProblem extends AbstractGenericProblem<Memetic
                 break;
 
             case 2:
-                this.measures.add((MemeticIntegerSolution solution) -> LOFMeasure(0, 2, solution));
-                this.measures.add((MemeticIntegerSolution solution) -> COFMeasure(1, 2, solution));
-                this.measures.add((MemeticIntegerSolution solution) -> CDMeasure(2, solution));
-                this.measures.add((MemeticIntegerSolution solution) -> KNDMeasure(3, 4, solution));
-                this.measures.add((MemeticIntegerSolution solution) -> ONMeasure(4, solution));
+                this.measures.add((MemeticIntegerSolution solution) -> KNDMeasure(0, 4, solution));
+                this.measures.add((MemeticIntegerSolution solution) -> KNDMeasure(1, 3, solution));
+                this.measures.add((MemeticIntegerSolution solution) -> KNDMeasure(2, 2, solution));
+                this.measures.add((MemeticIntegerSolution solution) -> ONMeasure(3, solution));
                 break;
 
             case 3:
-                this.measures.add((MemeticIntegerSolution solution) -> LOFMeasure(0, 2, solution));
-                this.measures.add((MemeticIntegerSolution solution) -> COFMeasure(1, 2, solution));
-                this.measures.add((MemeticIntegerSolution solution) -> CDMeasure(2, solution));
+                this.measures.add((MemeticIntegerSolution solution) -> KNDMeasure(0, 1, solution));
+                this.measures.add((MemeticIntegerSolution solution) -> KNDMeasure(1, 2, solution));
+                this.measures.add((MemeticIntegerSolution solution) -> KNDMeasure(2, 3, solution));
                 this.measures.add((MemeticIntegerSolution solution) -> KNDMeasure(3, 4, solution));
-                this.measures.add((MemeticIntegerSolution solution) -> ONMeasure(4, solution));
+                this.measures.add((MemeticIntegerSolution solution) -> KNDMeasure(4, 5, solution));
+                this.measures.add((MemeticIntegerSolution solution) -> KNDMeasure(5, 6, solution));
+                this.measures.add((MemeticIntegerSolution solution) -> ONMeasure(6, solution));
                 break;
 
 

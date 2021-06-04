@@ -16,6 +16,7 @@ import org.uma.jmetal.solution.memetic.MemeticIntegerSolution;
 import org.uma.jmetal.util.AbstractAlgorithmRunner;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
+import org.uma.jmetal.util.front.impl.ArrayFront;
 import results.ResultStorage;
 
 import java.io.BufferedReader;
@@ -28,17 +29,10 @@ import java.util.*;
 public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
 
   public static void main(String[] args) throws JMetalException, FileNotFoundException {
-    // SINGLE RUN
-    // constsRun();
 
-
-    // CONSTS GENERATOR RUN
-    while (ConstsGenerator.prepareNextConstsByParams()) {
-      constsRun();
-    }
   }
 
-  public static void constsRun() throws JMetalException, FileNotFoundException {
+  public static ArrayList<Float> constsRun() throws JMetalException, FileNotFoundException {
     int numb = Consts.numberOfRuns;
     ArrayList<Observation> observations = loadData();
     int outliers = 0;
@@ -53,13 +47,39 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
 
     for (int i = 0; i < numb; i++) {
       resultStorage.add(run(observations));
-      if ((i+1)%(Math.max(1, numb/10)) == 0) {
+      if ((i+1)%(Math.max(1, numb/4)) == 0) {
         System.out.println((int)(((i+1f)/numb*100)) + "% done");
       }
     }
 
     resultStorage.finish();
     resultStorage.print();
+
+    return resultStorage.getResults();
+  }
+
+  public static ArrayList<Float> normalRun() throws JMetalException, FileNotFoundException {
+    ArrayList<Observation> observations = loadData();
+    int outliers = 0;
+    for (Observation o : observations) {
+      if (o.diagnosis == Consts.outlierLabel) {
+        outliers++;
+      }
+    }
+    System.out.println("outliers: " + outliers);
+
+    ResultStorage resultStorage = new ResultStorage(1);
+
+    resultStorage.add(normalRun2(observations));
+
+    resultStorage.finish();
+    resultStorage.print();
+
+    return resultStorage.getResults();
+  }
+
+  public static ArrayList<Float> normalRun2(ArrayList<Observation> observations2) throws JMetalException, FileNotFoundException {
+    return null;
   }
 
   public static ArrayList<Float> run(ArrayList<Observation> observations2) throws JMetalException, FileNotFoundException {
@@ -98,13 +118,32 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
   }
 
   public static ArrayList<Float> calcResults(List<MemeticIntegerSolution> population, ArrayList<Observation> observations) {
+    HashMap<Integer, Integer> samplesCount = new HashMap<>();
+
+    for (int i = 0; i < Consts.outlierSize + Consts.normalSize; i++) {
+      samplesCount.put(i, 0);
+    }
+
+    for (MemeticIntegerSolution sol: population) {
+      for (Integer val: sol.getVariables()) {
+        samplesCount.put(val, samplesCount.get(val) + 1);
+      }
+    }
+
+    ArrayList<Integer> bests = new ArrayList<>();
+    for (int i = 0; i < Consts.outlierSize; i++) {
+      HashMap.Entry<Integer, Integer> entry = Collections.max(samplesCount.entrySet(), Comparator.comparing(Map.Entry::getValue));
+      bests.add(entry.getKey());
+      samplesCount.remove(entry.getKey());
+    }
+
     int tp = 0;
     int tn = 0;
     int fp = 0;
     int fn = 0;
     int i = 0;
     ArrayList<Observation> toRem = new ArrayList<>();
-    for (Integer val: population.get(0).getVariables()) {
+    for (Integer val: bests) {
       if (observations.get(val).diagnosis == Consts.outlierLabel) {
         tp++;
       }

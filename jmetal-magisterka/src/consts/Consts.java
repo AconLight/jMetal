@@ -6,27 +6,33 @@ import java.util.function.Function;
 public class Consts {
 
 
-    public static int measuresIdx = 0;
-    public static int numbOfObjectives = 5;
-    public static int numbOfFitnessHints = 4;
-    public static int outlierSize = 9;//18;
-    public static int normalSize = 205;//82;
+    public static int measuresIdx = 2;
+    public static int numbOfObjectives = 4;
+    public static int numbOfFitnessHints = 3;
+    public static int outlierSize = 18;
+    public static int normalSize = 82;
     public static int initialNumberofVariables = outlierSize;
     public static boolean fullFeatureSet = true;
-    public static int outlierLabel = 6;//4;
-    public static String file = "data/glass.data";
+    public static int outlierLabel = 4;
+    public static String file = "data/bcw.data";
 
-    public static double mutationAddProb = 0.2;
-    public static double mutationRemProb = 0.2;
-    public static double mutationChangeProb = 0.05;
+    public static double mutationAddProb = 0.08;
+    public static double mutationRemProb = 0.08;
+    public static double mutationChangeProb = 0.11;
 
-    public static double crossProb = 0.6;
+    public static double memesMutationAddProb = 0.24;
+    public static double memesMutationRemProb = 0.24;
 
-    public static int popSize = 12;
 
-    public static int evaluations = 800;
+    public static double crossProb = 0.8;
 
-    public static int numberOfRuns = 10;
+    public static int popSize = 18;
+
+    public static int evaluations = 400;
+
+    public static int numberOfRuns = 1;
+
+    public static double memesPerc = 1;
 
 
 
