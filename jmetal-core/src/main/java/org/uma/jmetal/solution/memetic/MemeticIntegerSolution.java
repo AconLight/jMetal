@@ -16,13 +16,11 @@ public class MemeticIntegerSolution extends AbstractSolution<Integer> implements
 
     private int lowerBound, upperBound;
 
-    public static int numberOfFitnessHints = Consts.numbOfFitnessHints;
-
     public MemeticIntegerSolution(int lowerBound, int upperBound, int initialNumberOfVariables, int numberOfObjectives) {
         super(initialNumberOfVariables, numberOfObjectives);
         variablesFitnessValues = new ArrayList<>();
         for (int i = 0; i < initialNumberOfVariables; i++) {
-            variablesFitnessValues.add(new ArrayList<Double>(Collections.nCopies(numberOfFitnessHints, 0d)));
+            variablesFitnessValues.add(new ArrayList<Double>(Collections.nCopies(Consts.numbOfFitnessHints, 0d)));
         }
 
         this.lowerBound = lowerBound;
@@ -34,10 +32,10 @@ public class MemeticIntegerSolution extends AbstractSolution<Integer> implements
     public MemeticIntegerSolution(int lowerBound, int upperBound, int initialNumberOfVariables, int numberOfObjectives, boolean noMoreMemes) {
         super(initialNumberOfVariables, numberOfObjectives);
         getVariables().clear();
-        for (int i = 0; i < numberOfFitnessHints; i++) {
+        for (int i = 0; i < Consts.numbOfFitnessHints; i++) {
             getVariables().add(null);
         }
-        memesValues = new ArrayList<Double>(Collections.nCopies(numberOfFitnessHints, null));
+        memesValues = new ArrayList<Double>(Collections.nCopies(Consts.numbOfFitnessHints, null));
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
     }
@@ -49,7 +47,7 @@ public class MemeticIntegerSolution extends AbstractSolution<Integer> implements
 
     public void addOneVar(Integer value) {
         getVariables().add(value);
-        variablesFitnessValues.add(new ArrayList<Double>(Collections.nCopies(numberOfFitnessHints, 0d)));
+        variablesFitnessValues.add(new ArrayList<Double>(Collections.nCopies(Consts.numbOfFitnessHints, 0d)));
     }
 
     public void remOneVar(int index) {

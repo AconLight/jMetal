@@ -1,5 +1,6 @@
 package org.uma.jmetal.problem.multiobjective;
 
+import consts.BestConsts;
 import consts.Consts;
 import model.Observation;
 import org.uma.jmetal.problem.AbstractGenericProblem;
@@ -49,9 +50,44 @@ public class BreastCancerDiagnosisProblem extends AbstractGenericProblem<Memetic
         }
     }
 
+    private Function<MemeticIntegerSolution, Double> measureFromString(String measure, int idx) {
+        String[] ks = measure.split("k=");
+        int k = -1;
+        if (ks.length > 1) {
+            k = Integer.parseInt(ks[1]);
+        }
+        int finalK = k;
+        int finalMIdx = idx;
+        if (measure.contains("LOF")) {
+            return (MemeticIntegerSolution solution) -> LOFMeasure(finalMIdx, finalK, solution);
+        }
+        if (measure.contains("COF")) {
+            return (MemeticIntegerSolution solution) -> COFMeasure(finalMIdx, finalK, solution);
+        }
+        if (measure.contains("CD")) {
+            return (MemeticIntegerSolution solution) -> CDMeasure(finalMIdx, solution);
+        }
+        if (measure.contains("KND")) {
+            return (MemeticIntegerSolution solution) -> KNDMeasure(finalMIdx, finalK, solution);
+        }
+        return null;
+    }
+
     private void measuresSetup() {
         this.measures = new ArrayList<>();
         switch (Consts.measuresIdx) {
+            case -1:
+                int mIdx = 0;
+                for (String measure: BestConsts.measures) {
+                    this.measures.add(measureFromString(measure, mIdx));
+                    mIdx++;
+                }
+                int a = Consts.numbOfFitnessHints;
+                int b = Consts.numbOfObjectives;
+                System.out.println();
+                int finalMIdx = mIdx;
+                this.measures.add((MemeticIntegerSolution solution) -> ONMeasure(finalMIdx, solution));
+                break;
             case 0:
                 this.measures.add((MemeticIntegerSolution solution) -> LOFMeasure(0, 2, solution));
                 this.measures.add((MemeticIntegerSolution solution) -> LOFMeasure(1, 3, solution));

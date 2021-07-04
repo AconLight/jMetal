@@ -7,8 +7,8 @@ public class ConstsGenerator {
 
     // by measure
     public static int[] measuresIdx = {2};
-    public static int[] numbOfObjectives = {4};
-    public static int[] numbOfFitnessHints = {3};
+    public static int[] numbOfObjectives = {3};
+    public static int[] numbOfFitnessHints = {2};
 
     // by file
     public static String file[] = {"data/bcw.data"};//, "data/glass.data"};
@@ -102,6 +102,10 @@ public class ConstsGenerator {
 
 
     public static boolean prepareNextConstsByEvaluation() {
+        Consts.measuresIdx = -1;
+        Consts.numbOfObjectives = BestConsts.measures.size() + 1;
+        Consts.numbOfFitnessHints = Consts.numbOfObjectives - 1;
+
         int allPossibilities = evaluations.length;
         currentConstsIdx++;
         if (currentConstsIdx > allPossibilities) {
@@ -136,19 +140,19 @@ public class ConstsGenerator {
 
         String ifMemes = "";
         if (Consts.memesPerc == 0) {
-            ifMemes = "no_memes_";
+            ifMemes = "no_memes/";
         } else {
-            ifMemes = "with_memes_";
+            ifMemes = "memes/";
         }
 
         if (currentConstsIdx-1 == 0) {
-            resultsSaver = new ResultsSaver(ifMemes + "mutation_add_remove_prob");
+            resultsSaver = new ResultsSaver("params/" + ifMemes + "mutation_add_remove_prob");
         } else if (currentConstsIdx-1 == mutationAddProb.length) {
-            resultsSaver = new ResultsSaver(ifMemes + "mutation_change_prob");
+            resultsSaver = new ResultsSaver("params/" + ifMemes + "mutation_change_prob");
         } else if (currentConstsIdx-1 == mutationAddProb.length + mutationChangeProb.length) {
-            resultsSaver = new ResultsSaver(ifMemes + "cross_prob");
+            resultsSaver = new ResultsSaver("params/" + ifMemes + "cross_prob");
         } else if (currentConstsIdx-1 == mutationAddProb.length + mutationChangeProb.length + crossProb.length) {
-            resultsSaver = new ResultsSaver(ifMemes + "pop_size");
+            resultsSaver = new ResultsSaver("params/" + ifMemes + "pop_size");
         }
 
         for (int mutationAddProbVal = 0; mutationAddProbVal < mutationAddProb.length; mutationAddProbVal++) {

@@ -36,9 +36,40 @@ public class Consts {
 
     public static int evaluations = 300;
 
-    public static int numberOfRuns = 20;
+    public static int numberOfRuns = 1;
 
     public static double memesPerc = 1;
+
+
+    public static Object setBCW() {
+        Consts.fullFeatureSet = true;
+        Consts.outlierSize = 18;
+        Consts.normalSize = 82;
+        Consts.outlierLabel = 4;
+        Consts.file = "data/bcw.data";
+        Consts.initialNumberofVariables = 18;
+        return null;
+    }
+
+    public static Object setNormal() {
+        Consts.fullFeatureSet = true;
+        Consts.outlierSize = 9;
+        Consts.normalSize = 205;
+        Consts.outlierLabel = 6;
+        Consts.file = "data/glass.data";
+        Consts.initialNumberofVariables = Consts.outlierSize*6;
+        return null;
+    }
+
+    public static Object setDim() {
+        Consts.fullFeatureSet = true;
+        Consts.outlierSize = 9;
+        Consts.normalSize = 205;
+        Consts.outlierLabel = 6;
+        Consts.file = "data/glass.data";
+        Consts.initialNumberofVariables = Consts.outlierSize*6;
+        return null;
+    }
 
 
 

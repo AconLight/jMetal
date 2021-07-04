@@ -1,5 +1,8 @@
 package consts;
 
+import java.util.ArrayList;
+import java.util.function.Function;
+
 public class BestConsts {
 
     public static double mutationAddProb = 0.08;
@@ -15,6 +18,9 @@ public class BestConsts {
     public static int popSize = 18;
 
     public static double memShare = 5;
+
+
+    public static ArrayList<String> measures = new ArrayList<>();
 
 
 

@@ -1,5 +1,6 @@
 package org.uma.jmetal.example.multiobjective.nsgaii;
 
+import consts.BestConsts;
 import consts.Consts;
 import consts.ConstsGenerator;
 import model.Observation;
@@ -25,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
 
 import static consts.ConstsGenerator.resultsSaver;
 import static org.uma.jmetal.example.multiobjective.nsgaii.NSGAIIMemeticRunner.loadData;
@@ -32,57 +34,25 @@ import static org.uma.jmetal.example.multiobjective.nsgaii.NSGAIIMemeticRunner.l
 
 public class NSGAIIMemeticRunnerStudy extends AbstractAlgorithmRunner {
 
+  private static Function[] datasets = {(x) -> Consts.setBCW(), (x) -> Consts.setNormal(), (x) -> Consts.setDim()};
+
   public static void main(String[] args) throws JMetalException, FileNotFoundException {
-//    NSGAIIMemeticRunner.constsRun();
+    Consts.setBCW();
+    perParams();
 
-    //set dataset
-    //perParams();
-    perEvals();
-
-    //set dataset
-    //normalAlgorithm();
-    memesPlusNoMemes();
-    memesPerc();
-
-  }
-
-  public static void perEvals() throws JMetalException, FileNotFoundException {
-
-    Consts.fullFeatureSet = true;
-
-    Consts.outlierSize = 18;
-    Consts.normalSize = 82;
-    Consts.outlierLabel = 4;
-    Consts.file = "data/bcw.data";
-    Consts.initialNumberofVariables = 18;
-
-    System.out.println("without memes");
-    ConstsGenerator.restart();
-    Consts.memesPerc = 0;
-    while (ConstsGenerator.prepareNextConstsByEvaluation()) {
-      NSGAIIMemeticRunner.constsRun();
+    for (Function dataset: datasets) {
+      dataset.apply(null);
+      normalAlgorithm();
+      perEvals();
+      memesPerc();
     }
 
-
-    System.out.println("with memes");
-    ConstsGenerator.restart();
-    Consts.memesPerc = 1;
-    while (ConstsGenerator.prepareNextConstsByEvaluation()) {
-      NSGAIIMemeticRunner.constsRun();
-    }
+    Consts.setDim();
+    dimensions();
 
   }
 
   public static void perParams() throws JMetalException, FileNotFoundException {
-
-    Consts.fullFeatureSet = true;
-
-    Consts.outlierSize = 18;
-    Consts.normalSize = 82;
-    Consts.outlierLabel = 4;
-    Consts.file = "data/bcw.data";
-    Consts.initialNumberofVariables = 18;
-
     System.out.println("without memes");
     ConstsGenerator.restart();
     Consts.memesPerc = 0;
@@ -101,22 +71,9 @@ public class NSGAIIMemeticRunnerStudy extends AbstractAlgorithmRunner {
   }
 
   public static void normalAlgorithm() throws JMetalException, FileNotFoundException {
-    Consts.fullFeatureSet = true;
 
-    Consts.outlierSize = 18;
-    Consts.normalSize = 82;
-    Consts.outlierLabel = 4;
-    Consts.file = "data/bcw.data";
+    resultsSaver = new ResultsSaver("measures/" + Consts.file.split("data/")[1].split(".data")[0]);
 
-    Consts.outlierSize = 9;
-    Consts.normalSize = 205;
-    Consts.outlierLabel = 6;
-    Consts.file = "data/glass.data";
-
-    Consts.initialNumberofVariables = Consts.outlierSize*6;
-
-    //resultsSaver = new ResultsSaver("measures");
-    //resultsSaver.saveRecord("measures/bcw/lof_k1", NSGAIIMemeticRunner.normalRun());
     BreastCancerDiagnosisProblem problem = new BreastCancerDiagnosisProblem(loadData());
     ArrayList<BreastCancerDiagnosisProblem.IMeasure> measures = new ArrayList<>();
     ArrayList<String> measureNames = new ArrayList<>();
@@ -128,12 +85,12 @@ public class NSGAIIMemeticRunnerStudy extends AbstractAlgorithmRunner {
     measures.add((MemeticIntegerSolution solution) -> problem.KNDMeasure(0, 1, solution));
     measures.add((MemeticIntegerSolution solution) -> problem.KNDMeasure(0, 2, solution));
     measureNames.add("CDMeasure");
-    measureNames.add("COFMeasure, k=1");
-    measureNames.add("COFMeasure, k=2");
-    measureNames.add("LOFMeasure, k=1");
-    measureNames.add("LOFMeasure, k=2");
-    measureNames.add("KNDMeasure, k=1");
-    measureNames.add("KNDMeasure, k=2");
+    measureNames.add("COFMeasure - k=1");
+    measureNames.add("COFMeasure - k=2");
+    measureNames.add("LOFMeasure - k=1");
+    measureNames.add("LOFMeasure - k=2");
+    measureNames.add("KNDMeasure - k=1");
+    measureNames.add("KNDMeasure - k=2");
 
     ArrayList<Pair<String, Pair<ArrayList<Float>, ArrayList<Integer>>>> measuresWithResults = new ArrayList<>();
 
@@ -147,14 +104,45 @@ public class NSGAIIMemeticRunnerStudy extends AbstractAlgorithmRunner {
 
     ArrayList<Pair<String, Pair<ArrayList<Float>, ArrayList<Integer>>>> chosenMeasures = NormalAlgorithm.chooseNMeasures(2, measuresWithResults);
 
+    BestConsts.measures.clear();
+    for (Pair<String, Pair<ArrayList<Float>, ArrayList<Integer>>> chosen: chosenMeasures) {
+      if (BestConsts.measures.stream().noneMatch(s -> s.contains(chosen.getFirst().split(" - k=")[0]))) {
+        BestConsts.measures.add(chosen.getFirst());
+        ArrayList<Float> ys = new ArrayList<>();
+        ys.add(chosen.getSecond().getFirst().get(0) / (chosen.getSecond().getFirst().get(0) + chosen.getSecond().getFirst().get(2) + 0f));
+        resultsSaver.saveRecord(chosen.getFirst(), ys);
+      }
+    }
+
     System.out.println();
   }
 
-  public static void memesPlusNoMemes() throws JMetalException, FileNotFoundException {
+  public static void perEvals() throws JMetalException, FileNotFoundException {
+    resultsSaver = new ResultsSaver("per_eval/no_memes/" + Consts.file.split("data/")[1].split(".data")[0]);
+    System.out.println("without memes");
+    ConstsGenerator.restart();
+    Consts.memesPerc = 0;
+    while (ConstsGenerator.prepareNextConstsByEvaluation()) {
+      resultsSaver.saveRecord(ConstsGenerator.currentLabel, NSGAIIMemeticRunner.constsRun());
+    }
+
+    resultsSaver = new ResultsSaver("per_eval/memes/" + Consts.file.split("data/")[1].split(".data")[0]);
+    System.out.println("with memes");
+    ConstsGenerator.restart();
+    Consts.memesPerc = 1;
+    while (ConstsGenerator.prepareNextConstsByEvaluation()) {
+      resultsSaver.saveRecord(ConstsGenerator.currentLabel, NSGAIIMemeticRunner.constsRun());
+    }
 
   }
 
+
+
   public static void memesPerc() throws JMetalException, FileNotFoundException {
+
+  }
+
+  public static void dimensions() throws JMetalException, FileNotFoundException {
 
   }
 
