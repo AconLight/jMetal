@@ -11,10 +11,10 @@ import java.util.function.Function;
 
 public class BreastCancerDiagnosisProblem extends AbstractGenericProblem<MemeticIntegerSolution> {
 
-    ArrayList<Observation> observations;
+    public ArrayList<Observation> observations;
     Vector<Double> centroid;
 
-    ArrayList<Function<MemeticIntegerSolution, Double>> measures;
+    public ArrayList<Function<MemeticIntegerSolution, Double>> measures;
 
     private void dataSetup(ArrayList<Observation> observations) {
         this.observations = observations;
@@ -241,7 +241,7 @@ public class BreastCancerDiagnosisProblem extends AbstractGenericProblem<Memetic
 
 
     // MEASURES WITH HINTS
-    private double KNDMeasure(int measureIdx, int k, MemeticIntegerSolution solution) {
+    public double KNDMeasure(int measureIdx, int k, MemeticIntegerSolution solution) {
 
         ArrayList<Observation> nonOutliers = new ArrayList<>();
         for (Observation o: observations) {
@@ -263,7 +263,7 @@ public class BreastCancerDiagnosisProblem extends AbstractGenericProblem<Memetic
         return 0;
     }
 
-    private double CDMeasure(int measureIdx, MemeticIntegerSolution solution) {
+    public double CDMeasure(int measureIdx, MemeticIntegerSolution solution) {
         double CDistanceSum = 0;
         int index = 0;
         for (Integer val: solution.getVariables()) {
@@ -278,7 +278,7 @@ public class BreastCancerDiagnosisProblem extends AbstractGenericProblem<Memetic
         return 0;
     }
 
-    private double LOFMeasure(int measureIdx, int k, MemeticIntegerSolution solution) {
+    public double LOFMeasure(int measureIdx, int k, MemeticIntegerSolution solution) {
         double LOFSum = 0;
         int index = 0;
         for (Integer val: solution.getVariables()) {
@@ -293,7 +293,7 @@ public class BreastCancerDiagnosisProblem extends AbstractGenericProblem<Memetic
         return 0;
     }
 
-    private double COFMeasure(int measureIdx, int k, MemeticIntegerSolution solution) {
+    public double COFMeasure(int measureIdx, int k, MemeticIntegerSolution solution) {
         double COFSum = 0;
         int index = 0;
         for (Integer val: solution.getVariables()) {
@@ -306,6 +306,13 @@ public class BreastCancerDiagnosisProblem extends AbstractGenericProblem<Memetic
         solution.setObjective(measureIdx, COFSum / solution.getVariables().size());
 
         return 0;
+    }
+
+
+
+
+    public interface IMeasure {
+        double calculate(MemeticIntegerSolution solution);
     }
 
 

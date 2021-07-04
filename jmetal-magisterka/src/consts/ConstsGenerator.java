@@ -14,7 +14,7 @@ public class ConstsGenerator {
     public static String file[] = {"data/bcw.data"};//, "data/glass.data"};
     public static int[] outlierSize = {18};//, 9};
     public static int[] normalSize = {82};//, 205};
-    public static int[] initialNumberofVariables = {9};//, 18};
+    public static int[] initialNumberofVariables = {18};//, 9};
     public static int[] outlierLabel = {4};//, 6};
 
     // all times all
@@ -27,7 +27,7 @@ public class ConstsGenerator {
     public static double[] memremK = {0.5};
 
 
-    public static int[] evaluations = {400, 500, 600, 700, 800, 900, 1000, 1100};
+    public static int[] evaluations = {100, 150, 200, 250, 300, 350, 400, 450};
 
 
     private static int currentConstsIdx = 0;
@@ -115,6 +115,7 @@ public class ConstsGenerator {
             } else if (i == currentConstsIdx) {
                 Consts.evaluations = evaluations[evalVal];
                 System.out.println("\nConsts.evaluations: " + Consts.evaluations);
+                currentLabel = "" + Consts.evaluations;
             }
         }
 

@@ -5,16 +5,22 @@ import java.util.function.Function;
 
 public class Consts {
 
-
+    public static boolean fullFeatureSet = true;
     public static int measuresIdx = 2;
     public static int numbOfObjectives = 4;
     public static int numbOfFitnessHints = 3;
-    public static int outlierSize = 18;
-    public static int normalSize = 82;
+
+//    public static int outlierSize = 18;
+//    public static int normalSize = 82;
+//    public static int outlierLabel = 4;
+//    public static String file = "data/bcw.data";
+
+    public static int outlierSize = 9;
+    public static int normalSize = 205;
+    public static int outlierLabel = 6;
+    public static String file = "data/glass.data";
+
     public static int initialNumberofVariables = outlierSize;
-    public static boolean fullFeatureSet = true;
-    public static int outlierLabel = 4;
-    public static String file = "data/bcw.data";
 
     public static double mutationAddProb = 0.08;
     public static double mutationRemProb = 0.08;
@@ -28,9 +34,9 @@ public class Consts {
 
     public static int popSize = 18;
 
-    public static int evaluations = 400;
+    public static int evaluations = 300;
 
-    public static int numberOfRuns = 1;
+    public static int numberOfRuns = 20;
 
     public static double memesPerc = 1;
 
