@@ -224,6 +224,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- https://mvnrepository.com/artifact/org.openjfx/javafx -->
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx</artifactId>
+                <version>11</version>
+                <type>pom</type>
+            </dependency>
             <dependency>
                 <groupId>org.uma.jmetal</groupId>
                 <artifactId>jmetal-core</artifactId>
