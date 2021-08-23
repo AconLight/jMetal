@@ -36,7 +36,7 @@ public class Consts {
 
     public static int evaluations = 300;
 
-    public static int numberOfRuns = 1;
+    public static int numberOfRuns = 5;
 
     public static double memesPerc = 1;
 

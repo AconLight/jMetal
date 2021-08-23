@@ -1,5 +1,6 @@
 package results;
 
+import charts.ChartCreator;
 import consts.Consts;
 
 import java.io.File;
@@ -15,6 +16,7 @@ import java.util.function.Function;
 public class ResultsSaver {
     private static String pathAll = "results/all/";
     private static String pathLast = "results/last/";
+    private static String pathCharts = "results/charts/";
 
     File fileAll;
     File fileLast;
@@ -26,6 +28,7 @@ public class ResultsSaver {
     }
 
     public ResultsSaver(String name) {
+        type = -1;
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
         System.out.println();
@@ -47,6 +50,47 @@ public class ResultsSaver {
         }
     }
 
+    public ResultsSaver(String name, int type) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println();
+        String date = "" + dtf.format(now)
+                .replace(".", "-")
+                .replace(":", "-")
+                .replace("/", "-");
+        filePathAll = pathAll + name + "_" + date + ".csv";;
+        filePathLast = pathLast + name + ".csv";
+        fileAll = new File(filePathAll);
+        fileLast = new File(filePathLast);
+
+        try {
+            FileWriter myWriter = new FileWriter(filePathLast, false);
+            myWriter.write("");
+            myWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.type = type;
+        if (type == 0) {
+            xDataString = new ArrayList<String>();
+            yData = new ArrayList<Float>();
+        } else if (type == 1) {
+            xDataNumber = new ArrayList<Float>();
+            yData = new ArrayList<Float>();
+        } else if(type == 2) {
+            xDataNumber = new ArrayList<Float>();
+            yData = new ArrayList<Float>();
+            y2Data = new ArrayList<Float>();
+        }
+
+    }
+
+    public int type;
+    public ArrayList xDataString;
+    public ArrayList xDataNumber;
+    public ArrayList yData;
+    public ArrayList y2Data;
+
     public void saveRecord(String x, ArrayList<Float> ys) {
         ArrayList<String> strings = new ArrayList<>();
         strings.add(x);
@@ -54,8 +98,6 @@ public class ResultsSaver {
             strings.add(new DecimalFormat("#.##").format(val).replace(",", "."));
         }
         String toWrite = String.join(", ", strings);
-//        System.out.println("toWrite");
-//        System.out.println(toWrite);
         try {
             FileWriter myWriter = new FileWriter(filePathAll, true);
             myWriter.append(toWrite + "\n");
@@ -70,5 +112,29 @@ public class ResultsSaver {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        if (type == 0) {
+            xDataString.add(x);
+            yData.add(ys.get(0));
+        } else if (type == 1) {
+            xDataNumber.add(Float.parseFloat(x));
+            yData.add(ys.get(0));
+        } else if(type == 2) {
+            xDataNumber.add(Float.parseFloat(x));
+            yData.add(ys.get(0));
+            y2Data.add(ys.get(1));
+        }
+    }
+
+    public void saveChart0(String name, String xAxisName, String yAxisName) {
+        ChartCreator.saveChart0(pathCharts, name, xAxisName, yAxisName, xDataString, yData);
+    }
+
+    public void saveChart1(String name, String xAxisName, String yAxisName) {
+        ChartCreator.saveChart1(pathCharts, name, xAxisName, yAxisName, xDataNumber, yData);
+    }
+
+    public void saveChart2(String name, String xAxisName, String yAxisName, String y2AxisName) {
+        ChartCreator.saveChart2(pathCharts, name, xAxisName, yAxisName, y2AxisName, xDataNumber, yData, y2Data);
     }
 }

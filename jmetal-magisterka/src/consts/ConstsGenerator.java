@@ -27,7 +27,7 @@ public class ConstsGenerator {
     public static double[] memremK = {0.5};
 
 
-    public static int[] evaluations = {100, 150, 200, 250, 300, 350, 400, 450};
+    public static int[] evaluations = {100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850};
 
 
     private static int currentConstsIdx = 0;
@@ -133,26 +133,35 @@ public class ConstsGenerator {
     public static boolean prepareNextConstsByParamsOnePerRun() {
         int allPossibilities = mutationAddProb.length + mutationChangeProb.length + crossProb.length + popSize.length;
         currentConstsIdx++;
-        if (currentConstsIdx > allPossibilities) {
+        if (currentConstsIdx > allPossibilities + 1) {
             return false;
         }
         int i = 0;
 
         String ifMemes = "";
+        String ifMemes2 = "";
         if (Consts.memesPerc == 0) {
             ifMemes = "no_memes/";
+            ifMemes2 = "no_memes";
         } else {
             ifMemes = "memes/";
+            ifMemes2 = "memes";
         }
 
         if (currentConstsIdx-1 == 0) {
-            resultsSaver = new ResultsSaver("params/" + ifMemes + "mutation_add_remove_prob");
+            resultsSaver = new ResultsSaver("params/" + ifMemes + "mutation_add_remove_prob", 0);
         } else if (currentConstsIdx-1 == mutationAddProb.length) {
-            resultsSaver = new ResultsSaver("params/" + ifMemes + "mutation_change_prob");
+            resultsSaver.saveChart1("params_" + ifMemes2 + "_mutation_add_remove_prob", "mutation_add_remove_prob", "precision");
+            resultsSaver = new ResultsSaver("params/" + ifMemes + "mutation_change_prob", 0);
         } else if (currentConstsIdx-1 == mutationAddProb.length + mutationChangeProb.length) {
-            resultsSaver = new ResultsSaver("params/" + ifMemes + "cross_prob");
+            resultsSaver.saveChart1("params_" + ifMemes2 + "_mutation_change_prob", "mutation_change_prob", "precision");
+            resultsSaver = new ResultsSaver("params/" + ifMemes + "cross_prob", 0);
         } else if (currentConstsIdx-1 == mutationAddProb.length + mutationChangeProb.length + crossProb.length) {
-            resultsSaver = new ResultsSaver("params/" + ifMemes + "pop_size");
+            resultsSaver.saveChart1("params_" + ifMemes2 + "_cross_prob", "cross_prob", "precision");
+            resultsSaver = new ResultsSaver("params/" + ifMemes + "pop_size", 0);
+        } else if (currentConstsIdx-1 == mutationAddProb.length + mutationChangeProb.length + crossProb.length + popSize.length) {
+            resultsSaver.saveChart1("params_" + ifMemes2 + "_popSize", "popSize", "precision");
+            return false;
         }
 
         for (int mutationAddProbVal = 0; mutationAddProbVal < mutationAddProb.length; mutationAddProbVal++) {

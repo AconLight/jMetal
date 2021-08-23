@@ -1,5 +1,6 @@
 package org.uma.jmetal.example.multiobjective.nsgaii;
 
+import charts.ChartCreator;
 import consts.BestConsts;
 import consts.Consts;
 import consts.ConstsGenerator;
@@ -34,21 +35,27 @@ import static org.uma.jmetal.example.multiobjective.nsgaii.NSGAIIMemeticRunner.l
 
 public class NSGAIIMemeticRunnerStudy extends AbstractAlgorithmRunner {
 
-  private static Function[] datasets = {(x) -> Consts.setBCW(), (x) -> Consts.setNormal(), (x) -> Consts.setDim()};
+  private static Function[] datasets = {(x) -> Consts.setBCW(), (x) -> Consts.setNormal()};//, (x) -> Consts.setDim()};
 
   public static void main(String[] args) throws JMetalException, FileNotFoundException {
+    Thread thread = new Thread(() -> ChartCreator.launchCharts());
+    thread.start();
+
     Consts.setBCW();
-    perParams();
+    //perParams();
 
     for (Function dataset: datasets) {
       dataset.apply(null);
       normalAlgorithm();
-      perEvals();
       memesPerc();
+      perEvals();
+
     }
 
-    Consts.setDim();
-    dimensions();
+//    Consts.setDim();
+//    dimensions();
+
+    thread.stop();
 
   }
 
@@ -72,7 +79,7 @@ public class NSGAIIMemeticRunnerStudy extends AbstractAlgorithmRunner {
 
   public static void normalAlgorithm() throws JMetalException, FileNotFoundException {
 
-    resultsSaver = new ResultsSaver("measures/" + Consts.file.split("data/")[1].split(".data")[0]);
+    resultsSaver = new ResultsSaver("measures/" + Consts.file.split("data/")[1].split(".data")[0], 0);
 
     BreastCancerDiagnosisProblem problem = new BreastCancerDiagnosisProblem(loadData());
     ArrayList<BreastCancerDiagnosisProblem.IMeasure> measures = new ArrayList<>();
@@ -113,26 +120,28 @@ public class NSGAIIMemeticRunnerStudy extends AbstractAlgorithmRunner {
         resultsSaver.saveRecord(chosen.getFirst(), ys);
       }
     }
-
+    resultsSaver.saveChart0("chosenMeasures", "measure name", "precision");
     System.out.println();
   }
 
   public static void perEvals() throws JMetalException, FileNotFoundException {
-    resultsSaver = new ResultsSaver("per_eval/no_memes/" + Consts.file.split("data/")[1].split(".data")[0]);
+    resultsSaver = new ResultsSaver("per_eval/no_memes/" + Consts.file.split("data/")[1].split(".data")[0], 2);
     System.out.println("without memes");
     ConstsGenerator.restart();
     Consts.memesPerc = 0;
     while (ConstsGenerator.prepareNextConstsByEvaluation()) {
       resultsSaver.saveRecord(ConstsGenerator.currentLabel, NSGAIIMemeticRunner.constsRun());
     }
+    resultsSaver.saveChart2("no_memes_" + Consts.file.split("/")[1].replace(".", "_"), "number of evaluations", "precision", "precision mean error");
 
-    resultsSaver = new ResultsSaver("per_eval/memes/" + Consts.file.split("data/")[1].split(".data")[0]);
+    resultsSaver = new ResultsSaver("per_eval/memes/" + Consts.file.split("data/")[1].split(".data")[0], 2);
     System.out.println("with memes");
     ConstsGenerator.restart();
     Consts.memesPerc = 1;
     while (ConstsGenerator.prepareNextConstsByEvaluation()) {
       resultsSaver.saveRecord(ConstsGenerator.currentLabel, NSGAIIMemeticRunner.constsRun());
     }
+    resultsSaver.saveChart2("memes_" + Consts.file.split("/")[1].replace(".", "_"), "number of evaluations", "precision", "precision mean error");
 
   }
 
