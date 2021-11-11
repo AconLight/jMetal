@@ -54,7 +54,7 @@ public class NSGAIIMemeticRunnerStudy extends AbstractAlgorithmRunner {
 
 //    Consts.setDim();
 //    dimensions();
-
+    System.out.println("memetic study finished ");
     thread.stop();
 
   }
@@ -121,7 +121,7 @@ public class NSGAIIMemeticRunnerStudy extends AbstractAlgorithmRunner {
       }
     }
     resultsSaver.saveChart0("chosenMeasures", "measure name", "precision");
-    System.out.println();
+    System.out.println("normal algorithm finished ");
   }
 
   public static void perEvals() throws JMetalException, FileNotFoundException {
@@ -148,7 +148,15 @@ public class NSGAIIMemeticRunnerStudy extends AbstractAlgorithmRunner {
 
 
   public static void memesPerc() throws JMetalException, FileNotFoundException {
+    resultsSaver = new ResultsSaver("memes_perc/" + Consts.file.split("data/")[1].split(".data")[0], 2);
+    System.out.println("memes perc");
+    ConstsGenerator.restart();
+    ConstsGenerator.setBest();
+    ConstsGenerator.setForMemesPerc();
+    for (int i = 0; i <= 100; i++) {
+      Consts.memesPerc = i/100f;
 
+    }
   }
 
   public static void dimensions() throws JMetalException, FileNotFoundException {

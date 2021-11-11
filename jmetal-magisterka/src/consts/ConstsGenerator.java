@@ -27,7 +27,7 @@ public class ConstsGenerator {
     public static double[] memremK = {0.5};
 
 
-    public static int[] evaluations = {100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850};
+    public static int[] evaluations = {100, 150, 200};//, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850};
 
 
     private static int currentConstsIdx = 0;
@@ -44,6 +44,10 @@ public class ConstsGenerator {
         Consts.mutationChangeProb = BestConsts.mutationChangeProb;
         Consts.crossProb = BestConsts.crossProb;
         Consts.popSize = BestConsts.popSize;
+    }
+
+    public static void setForMemesPerc() {
+        Consts.evaluations = 400;
     }
 
     public static boolean prepareNextConstsByParams() {

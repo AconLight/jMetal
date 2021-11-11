@@ -34,9 +34,9 @@ public class Consts {
 
     public static int popSize = 18;
 
-    public static int evaluations = 300;
+    public static int evaluations = 100;//300;
 
-    public static int numberOfRuns = 5;
+    public static int numberOfRuns = 3;//5;
 
     public static double memesPerc = 1;
 

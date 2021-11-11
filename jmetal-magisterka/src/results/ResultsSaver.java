@@ -22,12 +22,14 @@ public class ResultsSaver {
     File fileLast;
     String filePathAll;
     String filePathLast;
+    String myName;
 
     public static void main(String[] args) throws FileNotFoundException {
 
     }
 
     public ResultsSaver(String name) {
+        myName = name;
         type = -1;
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
@@ -51,6 +53,7 @@ public class ResultsSaver {
     }
 
     public ResultsSaver(String name, int type) {
+        myName = name;
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
         System.out.println();
@@ -125,16 +128,16 @@ public class ResultsSaver {
             y2Data.add(ys.get(1));
         }
     }
-
+    //słupkowy z nazwami
     public void saveChart0(String name, String xAxisName, String yAxisName) {
-        ChartCreator.saveChart0(pathCharts, name, xAxisName, yAxisName, xDataString, yData);
+        ChartCreator.saveChart0(pathCharts, myName, xAxisName, yAxisName, xDataString, yData);
     }
-
+    // liniowy x-y
     public void saveChart1(String name, String xAxisName, String yAxisName) {
-        ChartCreator.saveChart1(pathCharts, name, xAxisName, yAxisName, xDataNumber, yData);
+        ChartCreator.saveChart1(pathCharts, myName, xAxisName, yAxisName, xDataNumber, yData);
     }
-
+    // bombelkowy x-y+y_err
     public void saveChart2(String name, String xAxisName, String yAxisName, String y2AxisName) {
-        ChartCreator.saveChart2(pathCharts, name, xAxisName, yAxisName, y2AxisName, xDataNumber, yData, y2Data);
+        ChartCreator.saveChart2(pathCharts, myName, xAxisName, yAxisName, y2AxisName, xDataNumber, yData, y2Data);
     }
 }
