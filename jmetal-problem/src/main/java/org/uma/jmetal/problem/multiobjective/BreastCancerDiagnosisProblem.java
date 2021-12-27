@@ -73,6 +73,40 @@ public class BreastCancerDiagnosisProblem extends AbstractGenericProblem<Memetic
         return null;
     }
 
+//    private void bestMeasuresSetup() {
+//        this.measures = new ArrayList<>();
+//        int idx = 0;
+//        for (String name: BestConsts.measures) {
+//            int finalIdx = idx;
+//            switch (name) {
+//                case "CDMeasure":
+//                    this.measures.add((MemeticIntegerSolution solution) -> CDMeasure(finalIdx, solution));
+//                    break;
+//                case "COFMeasure - k=1":
+//                    this.measures.add((MemeticIntegerSolution solution) -> COFMeasure(finalIdx, 1, solution));
+//                    break;
+//                case "COFMeasure - k=2":
+//                    this.measures.add((MemeticIntegerSolution solution) -> COFMeasure(finalIdx, 2, solution));
+//                    break;
+//                case "LOFMeasure - k=1":
+//                    this.measures.add((MemeticIntegerSolution solution) -> LOFMeasure(finalIdx, 1, solution));
+//                    break;
+//                case "LOFMeasure - k=2":
+//                    this.measures.add((MemeticIntegerSolution solution) -> LOFMeasure(finalIdx, 2, solution));
+//                    break;
+//                case "KNDMeasure - k=1":
+//                    this.measures.add((MemeticIntegerSolution solution) -> KNDMeasure(finalIdx, 1, solution));
+//                    break;
+//                case "KNDMeasure - k=2":
+//                    this.measures.add((MemeticIntegerSolution solution) -> KNDMeasure(finalIdx, 2, solution));
+//                    break;
+//            }
+//            idx++;
+//
+//        }
+//
+//    }
+
     private void measuresSetup() {
         this.measures = new ArrayList<>();
         switch (Consts.measuresIdx) {
@@ -82,9 +116,8 @@ public class BreastCancerDiagnosisProblem extends AbstractGenericProblem<Memetic
                     this.measures.add(measureFromString(measure, mIdx));
                     mIdx++;
                 }
-                int a = Consts.numbOfFitnessHints;
-                int b = Consts.numbOfObjectives;
-                System.out.println();
+                Consts.numbOfFitnessHints = this.measures.size();
+                Consts.numbOfObjectives = this.measures.size() + 1;
                 int finalMIdx = mIdx;
                 this.measures.add((MemeticIntegerSolution solution) -> ONMeasure(finalMIdx, solution));
                 break;
@@ -129,6 +162,7 @@ public class BreastCancerDiagnosisProblem extends AbstractGenericProblem<Memetic
         dataSetup(observations);
         measuresSetup();
         problemSetup();
+
     }
 
     @Override

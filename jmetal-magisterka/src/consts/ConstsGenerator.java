@@ -2,6 +2,9 @@ package consts;
 
 import results.ResultsSaver;
 
+import java.util.ArrayList;
+import java.util.function.Function;
+
 public class ConstsGenerator {
 
 
@@ -27,7 +30,7 @@ public class ConstsGenerator {
     public static double[] memremK = {0.5};
 
 
-    public static int[] evaluations = {100, 150, 200};//, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850};
+    public static int[] evaluations = {/*100, 200, 300, 400, 500, 600, 700, 800, 900, */1000, 1100, 1200, 1300, 1400/*, 1500, 1600, 1700*/};//, 1000, 1250, 1500, 1750, 2000
 
 
     private static int currentConstsIdx = 0;
@@ -47,7 +50,13 @@ public class ConstsGenerator {
     }
 
     public static void setForMemesPerc() {
-        Consts.evaluations = 400;
+        //Consts.evaluations = 200;
+        Consts.measuresIdx = -1;
+    }
+
+    public static void setForDim() {
+        Consts.evaluations = 600;
+        Consts.measuresIdx = -1;
     }
 
     public static boolean prepareNextConstsByParams() {
@@ -124,6 +133,37 @@ public class ConstsGenerator {
                 Consts.evaluations = evaluations[evalVal];
                 System.out.println("\nConsts.evaluations: " + Consts.evaluations);
                 currentLabel = "" + Consts.evaluations;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean prepareNextConstsByDim() {
+        Consts.measuresIdx = -1;
+        Consts.numbOfObjectives = BestConsts.measures.size() + 1;
+        Consts.numbOfFitnessHints = Consts.numbOfObjectives - 1;
+        Consts.outlierLabel = 1;
+        Consts.fullFeatureSet = true;
+        Consts.outlierSize = 15;
+        Consts.normalSize = 85;
+
+
+        ArrayList<Function> dims = Consts.getDimsFromRight("featuremusk.csv", 3, 20);
+        int allPossibilities = dims.size();
+        currentConstsIdx++;
+        if (currentConstsIdx > allPossibilities) {
+            return false;
+        }
+        int i = 0;
+        for (int dim = 0; dim < dims.size(); dim++) {
+            i++;
+            if (i < currentConstsIdx) {
+                continue;
+            } else if (i == currentConstsIdx) {
+                dims.get(i-1).apply(null);
+                System.out.println("\ndimensions: " + (i));
+                currentLabel = "" + (i);
             }
         }
 

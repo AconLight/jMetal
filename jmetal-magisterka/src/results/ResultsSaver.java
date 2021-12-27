@@ -125,7 +125,7 @@ public class ResultsSaver {
         } else if(type == 2) {
             xDataNumber.add(Float.parseFloat(x));
             yData.add(ys.get(0));
-            y2Data.add(ys.get(1));
+            y2Data.add(ys.get(1)/10f + 0.01f);
         }
     }
     //słupkowy z nazwami

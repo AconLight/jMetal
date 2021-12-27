@@ -21,6 +21,7 @@ public class BestConsts {
 
 
     public static ArrayList<String> measures = new ArrayList<>();
+    public static ArrayList<String> measuresObjects = new ArrayList<>();
 
 
 

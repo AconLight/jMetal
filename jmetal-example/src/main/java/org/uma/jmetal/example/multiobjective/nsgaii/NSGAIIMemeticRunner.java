@@ -182,7 +182,14 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
               Consts.file));
       String line = reader.readLine();
       int i = 0;
+
       while (line != null) {
+        //System.out.println(i);
+        //System.out.println("elo" + line.split(",")[0]);
+        if (line.split(",")[0].length() == 0) {
+          line = reader.readLine();
+          continue;
+        }
         if (!line.contains("?")) {
           observations.add(new Observation(line));
           i++;
@@ -206,6 +213,8 @@ public class NSGAIIMemeticRunner extends AbstractAlgorithmRunner {
     }
     Collections.shuffle(normal, new Random(2137));
     Collections.shuffle(outliers, new Random(2137));
+    System.out.println(normal.size());
+    System.out.println(outliers.size());
     normal = new ArrayList<>(normal.subList(0, Consts.normalSize));
     outliers = new ArrayList<>(outliers.subList(0, Consts.outlierSize));
     observations.clear();

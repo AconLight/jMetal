@@ -6,6 +6,8 @@ import java.util.function.Function;
 public class Consts {
 
     public static boolean fullFeatureSet = true;
+    public static int featuresNumb = 0;
+    public static int featuresMinus = 0;
     public static int measuresIdx = 2;
     public static int numbOfObjectives = 4;
     public static int numbOfFitnessHints = 3;
@@ -34,12 +36,44 @@ public class Consts {
 
     public static int popSize = 18;
 
-    public static int evaluations = 100;//300;
+    public static int evaluations = 201;//300;
 
-    public static int numberOfRuns = 3;//5;
+    public static int numberOfRuns = 2;
 
     public static double memesPerc = 1;
 
+    public static double bestMemesPerc = 0.7;
+
+
+    public static ArrayList<Function> getDims(String fileName, int dimNumb) {
+        ArrayList<Function> setters = new ArrayList<>();
+
+        for (int i = 0; i < dimNumb; i++) {
+            int finalI = i;
+            setters.add((x) -> {
+                Consts.file = "data/" + finalI + fileName;
+                Consts.initialNumberofVariables = 15;
+                return null;
+            });
+        }
+
+        return setters;
+    }
+
+    public static ArrayList<Function> getDimsFromRight(String fileName, int dimNumb, int dimSize) {
+        ArrayList<Function> setters = new ArrayList<>();
+
+        for (int i = 0; i < dimNumb; i++) {
+            int finalI = dimSize - i -1;
+            setters.add((x) -> {
+                Consts.file = "data/" + finalI + fileName;
+                Consts.initialNumberofVariables = 15;
+                return null;
+            });
+        }
+
+        return setters;
+    }
 
     public static Object setBCW() {
         Consts.fullFeatureSet = true;
@@ -48,16 +82,38 @@ public class Consts {
         Consts.outlierLabel = 4;
         Consts.file = "data/bcw.data";
         Consts.initialNumberofVariables = 18;
+        Consts.evaluations = 400;
+        return null;
+    }
+
+    public static Object setMusk() {
+        Consts.fullFeatureSet = true;
+        Consts.outlierSize = 15;
+        Consts.normalSize = 85;
+        Consts.outlierLabel = 1;
+        Consts.file = "data/featuremusk.csv";
+        Consts.initialNumberofVariables = 15;
+        return null;
+    }
+
+    public static Object setAr() {
+        Consts.fullFeatureSet = true;
+        Consts.outlierSize = 2;
+        Consts.normalSize = 66;
+        Consts.outlierLabel = 1;
+        Consts.file = "data/arrhythmia.csv";
+        Consts.initialNumberofVariables = 2;
         return null;
     }
 
     public static Object setNormal() {
         Consts.fullFeatureSet = true;
-        Consts.outlierSize = 9;
-        Consts.normalSize = 205;
+        Consts.outlierSize = 7;
+        Consts.normalSize = 93;
         Consts.outlierLabel = 6;
         Consts.file = "data/glass.data";
-        Consts.initialNumberofVariables = Consts.outlierSize*6;
+        Consts.initialNumberofVariables = 7;
+        Consts.evaluations = 800;
         return null;
     }
 
