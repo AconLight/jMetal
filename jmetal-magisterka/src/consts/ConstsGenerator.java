@@ -30,7 +30,8 @@ public class ConstsGenerator {
     public static double[] memremK = {0.5};
 
 
-    public static int[] evaluations = {/*100, 200, 300, 400, 500, 600, 700, 800, 900, */1000, 1100, 1200, 1300, 1400/*, 1500, 1600, 1700*/};//, 1000, 1250, 1500, 1750, 2000
+    public static int[] evaluations = {50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1100, 1300, 1500, 1700};
+//    public static int[] evaluations = {50, 100, 150, 200};
 
 
     private static int currentConstsIdx = 0;
@@ -50,7 +51,6 @@ public class ConstsGenerator {
     }
 
     public static void setForMemesPerc() {
-        //Consts.evaluations = 200;
         Consts.measuresIdx = -1;
     }
 
@@ -149,7 +149,8 @@ public class ConstsGenerator {
         Consts.normalSize = 85;
 
 
-        ArrayList<Function> dims = Consts.getDimsFromRight("featuremusk.csv", 3, 20);
+
+        ArrayList<Function> dims = Consts.getDimsFromRight("featuremusk.csv", 165, 167);
         int allPossibilities = dims.size();
         currentConstsIdx++;
         if (currentConstsIdx > allPossibilities) {

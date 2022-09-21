@@ -36,29 +36,45 @@ import static org.uma.jmetal.example.multiobjective.nsgaii.NSGAIIMemeticRunner.l
 
 public class NSGAIIMemeticRunnerStudy extends AbstractAlgorithmRunner {
 
-  private static Function[] datasets = {/*(x) -> Consts.setBCW(), *//*(x) -> Consts.setNormal(),  */(x) -> Consts.setMusk()};
+  static ArrayList<Float> bestMemesPerc;
+  private static Function[] datasets = {(x) -> Consts.setBCW(), (x) -> Consts.setNormal(),  (x) -> Consts.setMusk()};
 
   public static void main(String[] args) throws JMetalException, FileNotFoundException {
     Thread thread = new Thread(() -> ChartCreator.launchCharts());
     thread.start();
 
-    //Consts.setBCW();
-    //perParams();
+    long start = System.currentTimeMillis();
+// some time passes
+
+    bestMemesPerc = new ArrayList<>();
+//    Consts.setBCW();
+//    perParams();
 
     for (Function dataset: datasets) {
       dataset.apply(null);
       normalAlgorithm();
+//      dataset.apply(null);
 //      memesPerc();
 //      dataset.apply(null);
-      perEvals();
+//      perEvals();
     }
 
     // just for big dim
 //    Consts.setMusk();
 //    normalAlgorithm();
+    Consts.memesPerc = 0.7d;
 
-    //dimensionsPCA();
+    dimensionsPCA();
+
+    System.out.println("best memes perc:");
+    for (float b: bestMemesPerc) {
+      System.out.println(b);
+    }
+
     System.out.println("memetic study finished ");
+    long end = System.currentTimeMillis();
+    long elapsedTime = end - start;
+    System.out.println(elapsedTime);
     thread.stop();
 
   }
@@ -73,12 +89,12 @@ public class NSGAIIMemeticRunnerStudy extends AbstractAlgorithmRunner {
     }
 
 
-    System.out.println("with memes");
-    ConstsGenerator.restart();
-    Consts.memesPerc = 1;
-    while (ConstsGenerator.prepareNextConstsByParamsOnePerRun()) {
-      resultsSaver.saveRecord(ConstsGenerator.currentLabel, NSGAIIMemeticRunner.constsRun());
-    }
+//    System.out.println("with memes");
+//    ConstsGenerator.restart();
+//    Consts.memesPerc = 1;
+//    while (ConstsGenerator.prepareNextConstsByParamsOnePerRun()) {
+//      resultsSaver.saveRecord(ConstsGenerator.currentLabel, NSGAIIMemeticRunner.constsRun());
+//    }
 
   }
 
@@ -128,7 +144,7 @@ public class NSGAIIMemeticRunnerStudy extends AbstractAlgorithmRunner {
         resultsSaver.saveRecord(chosen.getFirst(), ys);
       }
     }
-    resultsSaver.saveChart0("chosenMeasures", "measure name", "precision");
+    resultsSaver.saveChart0("chosenMeasures", "measure name", "accuracy [%]");
     System.out.println("normal algorithm finished ");
     for (String name: BestConsts.measures) {
       System.out.println(name);
@@ -167,7 +183,8 @@ public class NSGAIIMemeticRunnerStudy extends AbstractAlgorithmRunner {
     ConstsGenerator.setForMemesPerc();
     Consts.featuresMinus = 0;
     float best = 0;
-    for (int i = 0; i <= 100; i+=5) {
+    for (int i = 0; i <= 100; i+=5) { // ppFactor
+    //for (int i = 0; i <= 100; i+=50) {
       Consts.memesPerc = i/100f;
       ArrayList<Float> res = NSGAIIMemeticRunner.constsRun();
       if (res.get(0) > best) {
@@ -176,6 +193,7 @@ public class NSGAIIMemeticRunnerStudy extends AbstractAlgorithmRunner {
       }
       resultsSaver.saveRecord("" + i, res);
     }
+    bestMemesPerc.add(best);
     resultsSaver.saveChart2("memes_perc_" + Consts.file.split("/")[1].replace(".", "_"), "memes_perc", "precision", "precision mean error");
   }
 
@@ -220,23 +238,25 @@ public class NSGAIIMemeticRunnerStudy extends AbstractAlgorithmRunner {
   }
 
   public static void dimensionsPCA() throws JMetalException, FileNotFoundException {
-    resultsSaver = new ResultsSaver("dim_pca/no_memes_" + Consts.file.split("data/")[1].split(".csv")[0], 2);
+    //resultsSaver = new ResultsSaver("dim_pca/no_memes/" + Consts.file.split("data/")[1].split(".csv")[0], 2);
+    resultsSaver = new ResultsSaver("dim_pca/no_memes/musk", 2);
     System.out.println("without memes");
     ConstsGenerator.restart();
     Consts.memesPerc = 0;
     while (ConstsGenerator.prepareNextConstsByDim()) {
       resultsSaver.saveRecord(ConstsGenerator.currentLabel, NSGAIIMemeticRunner.constsRun());
     }
-    resultsSaver.saveChart1("dim_pca/no_memes_" + Consts.file.split("/")[1].replace(".", "_"), "number of dimensions", "precision");
+    resultsSaver.saveChart1("dim_pca/no_memes/" + Consts.file.split("/")[1].replace(".", "_"), "number of dimensions", "precision");
 
-    resultsSaver = new ResultsSaver("dim_pca/memes_" + Consts.file.split("data/")[1].split(".csv")[0], 2);
+    //resultsSaver = new ResultsSaver("dim_pca/memes/" + Consts.file.split("data/")[1].split(".csv")[0], 2);
+    resultsSaver = new ResultsSaver("dim_pca/memes/musk", 2);
     System.out.println("with memes");
     ConstsGenerator.restart();
     Consts.memesPerc = Consts.bestMemesPerc;
     while (ConstsGenerator.prepareNextConstsByDim()) {
       resultsSaver.saveRecord(ConstsGenerator.currentLabel, NSGAIIMemeticRunner.constsRun());
     }
-    resultsSaver.saveChart1("dim_pca/memes_" + Consts.file.split("/")[1].replace(".", "_"), "number of dimensions", "precision");
+    resultsSaver.saveChart1("dim_pca/memes/" + Consts.file.split("/")[1].replace(".", "_"), "number of dimensions", "precision");
 
   }
 

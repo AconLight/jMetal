@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ResultStorage {
+    int siz = 0;
+
     float sumAcc = 0;
     float minAcc = 1;
     float maxAcc = 0;
@@ -80,7 +82,7 @@ public class ResultStorage {
 
         smeCO = 0;
         for (Float val: smCO) {
-            smeCO += Math.abs(val-sumCO);
+            smeCO += Math.pow(val-sumCO, 2);
         }
         smeCO = (float) Math.sqrt(smeCO/smCO.size());
 
@@ -98,6 +100,8 @@ public class ResultStorage {
         }
         smeF1 = (float) Math.sqrt(smeF1/smF1.size());
 
+        siz = smCO.size();
+
         smAcc.clear();
         smCO.clear();
         smFO.clear();
@@ -105,7 +109,7 @@ public class ResultStorage {
     }
 
     public ArrayList<Float> getResults() {
-        Float[] ret = {sumCO, smeCO};
+        Float[] ret = {sumCO, smeCO, (float) Math.pow(smeCO, 2), (float) (smeCO/Math.sqrt(siz))};
         return new ArrayList<>(Arrays.asList(ret));
     }
 

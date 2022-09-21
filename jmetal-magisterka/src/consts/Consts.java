@@ -36,9 +36,9 @@ public class Consts {
 
     public static int popSize = 18;
 
-    public static int evaluations = 201;//300;
+    public static int evaluations = 80;//300;
 
-    public static int numberOfRuns = 2;
+    public static int numberOfRuns = 20;
 
     public static double memesPerc = 1;
 
@@ -82,7 +82,8 @@ public class Consts {
         Consts.outlierLabel = 4;
         Consts.file = "data/bcw.data";
         Consts.initialNumberofVariables = 18;
-        Consts.evaluations = 400;
+        Consts.evaluations = 250;
+        //Consts.evaluations = 100; // ppFactor
         return null;
     }
 
@@ -93,6 +94,8 @@ public class Consts {
         Consts.outlierLabel = 1;
         Consts.file = "data/featuremusk.csv";
         Consts.initialNumberofVariables = 15;
+        Consts.evaluations = 900;
+        //Consts.evaluations = 100; // ppFactor
         return null;
     }
 
@@ -113,7 +116,8 @@ public class Consts {
         Consts.outlierLabel = 6;
         Consts.file = "data/glass.data";
         Consts.initialNumberofVariables = 7;
-        Consts.evaluations = 800;
+        Consts.evaluations = 600;
+        //Consts.evaluations = 100; // ppFactor
         return null;
     }
 

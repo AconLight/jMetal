@@ -125,7 +125,7 @@ public class ResultsSaver {
         } else if(type == 2) {
             xDataNumber.add(Float.parseFloat(x));
             yData.add(ys.get(0));
-            y2Data.add(ys.get(1)/10f + 0.01f);
+            y2Data.add(ys.get(1));
         }
     }
     //słupkowy z nazwami
@@ -134,10 +134,10 @@ public class ResultsSaver {
     }
     // liniowy x-y
     public void saveChart1(String name, String xAxisName, String yAxisName) {
-        ChartCreator.saveChart1(pathCharts, myName, xAxisName, yAxisName, xDataNumber, yData);
+        //ChartCreator.saveChart1(pathCharts, myName, xAxisName, yAxisName, xDataNumber, yData);
     }
     // bombelkowy x-y+y_err
     public void saveChart2(String name, String xAxisName, String yAxisName, String y2AxisName) {
-        ChartCreator.saveChart2(pathCharts, myName, xAxisName, yAxisName, y2AxisName, xDataNumber, yData, y2Data);
+        //ChartCreator.saveChart2(pathCharts, myName, xAxisName, yAxisName, y2AxisName, xDataNumber, yData, y2Data);
     }
 }
